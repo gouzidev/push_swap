@@ -1,6 +1,27 @@
 #include "push_swap.h"
-#include "libft/libft.h"
 
+int	ft_atoi(const char *str)
+{
+	int	i;
+	int	sign;
+	int	res;
+
+	res = 0;
+	sign = 1;
+	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + (str[i] - 48);
+		i++;
+	}
+	return (res * sign);
+}
 
 t_stack	*new(int n)
 {
@@ -48,6 +69,19 @@ void print_stack(t_stack *stack)
 
 }
 
+int valid(char *num)
+{
+    int i;
+
+    i = 0;
+    while (num[i])
+    {
+        if (num[i] < '0' || num[i] > '9')
+            return (0);
+        i++;
+    }
+    return (1);
+}
 
 int size(t_stack *stack)
 {
@@ -60,17 +94,40 @@ int size(t_stack *stack)
         stack = stack->next;
     }
     return i;
-
 }
-int main(int ac, char *av[])
+void clear(t_stack **head)
+{
+    t_stack *curr;
+    t_stack *temp;
+
+    curr = *head;
+    while (curr)
+    {
+        temp = curr;
+        curr = curr->next;
+        free(temp);
+    }
+}
+int main2(int ac, char *av[])
 {
     t_stack *head;
     int i;
     int n;
 
-    i = 0;
+    i = 1;
     head = NULL;
-    fill_stack(&head);
+    while (i < ac)
+    {
+        if (valid(av[i]))
+            push(&head, new(ft_atoi(av[i])));
+        i++;
+    }
+    // fill_stack(&head);
     print_stack(head);
-    printf("size is -> %d\n", size(head));
+    // printf("size is -> %d\n", size(head));
+}
+int main(int ac, char *av[])
+{
+    main2(ac, av);
+    system("leaks a.out");
 }
