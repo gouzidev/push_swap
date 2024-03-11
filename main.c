@@ -1,28 +1,26 @@
 #include "push_swap.h"
 
-#include "push_swap.h"
-
-int	ft_atoi(const char *str)
+int ft_atoi(const char *str)
 {
-	int	i;
-	int	sign;
-	int	res;
+    int i;
+    int sign;
+    int res;
 
-	res = 0;
-	sign = 1;
-	i = 0;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		res = res * 10 + (str[i] - 48);
-		i++;
-	}
-	return (res * sign);
+    res = 0;
+    sign = 1;
+    i = 0;
+    if (str[i] == '-' || str[i] == '+')
+    {
+        if (str[i] == '-')
+            sign = -1;
+        i++;
+    }
+    while (str[i] >= '0' && str[i] <= '9')
+    {
+        res = res * 10 + (str[i] - 48);
+        i++;
+    }
+    return (res * sign);
 }
 int is_empty(t_stack *head)
 {
@@ -30,24 +28,25 @@ int is_empty(t_stack *head)
         return 0;
     return 1;
 }
-t_stack *new(int n) {
-	t_stack	*new_node;
-
-	new_node = malloc(sizeof(t_stack));
-	if (new_node == 0)
-		return (0);
-	new_node->next = NULL;
-	new_node->n = n;
-	return (new_node);
-}
-void	push(t_stack **head, t_stack *new)
+t_stack *new(int n)
 {
-	t_stack	*last;
+    t_stack *new_node;
+
+    new_node = malloc(sizeof(t_stack));
+    if (new_node == 0)
+        return (0);
+    new_node->next = NULL;
+    new_node->n = n;
+    return (new_node);
+}
+void push(t_stack **head, t_stack *new)
+{
+    t_stack *last;
 
     new->next = *head;
     *head = new;
 }
-void	pop(t_stack **head)
+void pop(t_stack **head)
 {
     t_stack *temp;
     if (!*head)
@@ -62,7 +61,7 @@ t_stack *dup(t_stack *node)
 
     if (!node)
         return (NULL);
-    temp = new(node->n);
+    temp = new (node->n);
     return temp;
 }
 t_stack *before_last(t_stack *head)
@@ -70,7 +69,6 @@ t_stack *before_last(t_stack *head)
     while (head && head->next && head->next->next)
         head = head->next;
     return head;
-    
 }
 t_stack *last(t_stack *head)
 {
@@ -80,10 +78,10 @@ t_stack *last(t_stack *head)
 }
 void fill_stack(t_stack **stack)
 {
-    push(stack, new(1));
-    push(stack, new(2));
-    push(stack, new(3));
-    push(stack, new(4));
+    push(stack, new (1));
+    push(stack, new (2));
+    push(stack, new (3));
+    push(stack, new (4));
 }
 void print_stack(t_stack *stack)
 {
@@ -94,7 +92,6 @@ void print_stack(t_stack *stack)
         stack = stack->next;
     }
     printf("\n---\n");
-
 }
 void print_exit(char *msg)
 {
@@ -128,6 +125,19 @@ int size(t_stack *stack)
     }
     return i;
 }
+int exists(t_stack *stack, t_stack *node)
+{
+    t_stack *temp;
+
+    temp = stack;
+    while (temp)
+    {
+        if (temp->n == node->n)
+            return (1);
+        temp = temp->next;
+    }
+    return (0);
+}
 void clear(t_stack **head)
 {
     t_stack *curr;
@@ -148,13 +158,13 @@ void sa(t_stack **head)
 
     if ((*head) && (*head)->next)
     {
-        tmp1 = new((*head)->n);
+        tmp1 = new ((*head)->n);
         pop(head);
-        tmp2 = new((*head)->n);
+        tmp2 = new ((*head)->n);
         pop(head);
         push(head, tmp1);
         push(head, tmp2);
-    }   
+    }
 }
 void pa(t_stack **a, t_stack **b)
 {
@@ -211,6 +221,7 @@ int main(int ac, char *av[])
     while (i < ac)
     {
         j = 0;
+        check_format(av[i]);
         arr = ft_split(av[i], ' ');
         while (arr && arr[j])
         {
@@ -218,9 +229,9 @@ int main(int ac, char *av[])
                 print_exit("Error\n");
             else
             {
-                node = new(ft_atoi(arr[j]));
-                if (!node)
-                    print_exit("Error\n");
+                node = new (ft_atoi(arr[j]));
+                if (!node || exists(a, node))
+                    print_exit("Error");
                 push(&a, node);
             }
             j++;

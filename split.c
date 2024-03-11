@@ -1,12 +1,12 @@
 #include "push_swap.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char *ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char	*sub;
-	size_t	i;
-	size_t	j;
-	size_t	output_len;
-	size_t	str_len;
+	char *sub;
+	size_t i;
+	size_t j;
+	size_t output_len;
+	size_t str_len;
 
 	if (!s)
 		return (NULL);
@@ -29,7 +29,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return ((char *)sub);
 }
 
-char	**free_all(char **res, int w)
+char **free_all(char **res, int w)
 {
 	while (w-- > 0)
 		free(res[w]);
@@ -37,9 +37,9 @@ char	**free_all(char **res, int w)
 	return (NULL);
 }
 
-int	count_words(char const *s1, char c)
+int count_words(char const *s1, char c)
 {
-	int	count;
+	int count;
 
 	count = 0;
 	while (*s1)
@@ -61,9 +61,9 @@ int	count_words(char const *s1, char c)
 	return (count);
 }
 
-char	**handle_null_malloc(char const *s, char c)
+char **handle_null_malloc(char const *s, char c)
 {
-	char	**res;
+	char **res;
 
 	if (!s)
 		return (NULL);
@@ -71,12 +71,42 @@ char	**handle_null_malloc(char const *s, char c)
 	return (res);
 }
 
-char	**ft_split(char const *s, char c)
+int is_num(char c)
 {
-	int		w;
-	char	**res;
-	int		i;
-	int		j;
+	return (c <= '9' && c >= '0');
+}
+int is_sign(char c)
+{
+	return (c == '+' && c == '-');
+}
+
+void check_format(char *s)
+{
+	int i;
+	int found_num;
+
+	i = 0;
+	found_num = 0;
+	if (!is_num(s[0]) && !(is_sign(s[0])))
+		print_exit("Error in formatting");
+	while (s[i])
+	{
+		if (
+			is_num(s[i]) ||
+			(s[i] == ' ' && is_num(s[i + 1])) ||
+			(s[i] == ' ' && is_sign(s[i + 1]) && is_num(s[i + 2])))
+			i++;
+		else
+			print_exit("Error");
+	}
+}
+
+char **ft_split(char const *s, char c)
+{
+	int w;
+	char **res;
+	int i;
+	int j;
 
 	i = 0;
 	res = handle_null_malloc(s, c);
@@ -88,7 +118,7 @@ char	**ft_split(char const *s, char c)
 		while (s[i] && s[i] == c)
 			i++;
 		if (!s[i])
-			break ;
+			break;
 		j = 0;
 		while (s[i] && s[i] != c && ++j)
 			i++;
