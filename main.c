@@ -2,11 +2,16 @@
 
 #include "push_swap.h"
 
-int	ft_atoi(const char *str)
+void print_exit(char *msg)
 {
-	int	i;
-	int	sign;
-	int	res;
+    printf("%s\n", msg);
+    exit(1);
+}
+int	ft_3atwa(const char *str)
+{
+	int	    i;
+	int	    sign;
+	long    res;
 
 	res = 0;
 	sign = 1;
@@ -20,6 +25,8 @@ int	ft_atoi(const char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		res = res * 10 + (str[i] - 48);
+        if (res > INT_MAX || (res * sign) < INT_MIN)
+            print_exit("laaaarge number");
 		i++;
 	}
 	return (res * sign);
@@ -30,7 +37,7 @@ int is_empty(t_stack *head)
         return 0;
     return 1;
 }
-t_stack *new(int n) {
+t_stack *new(int n, int i) {
 	t_stack	*new_node;
 
 	new_node = malloc(sizeof(t_stack));
@@ -38,7 +45,20 @@ t_stack *new(int n) {
 		return (0);
 	new_node->next = NULL;
 	new_node->n = n;
+    new_node->i = i;
 	return (new_node);
+}
+int exists(t_stack *head, t_stack *node)
+{
+    if (!node)
+        print_exit("please give a valid node");
+    while (head)
+    {
+        if (head->n == node->n)
+            return 1;
+        head = head->next;
+    }
+    return (0);
 }
 void	push(t_stack **head, t_stack *new)
 {
@@ -62,7 +82,7 @@ t_stack *dup(t_stack *node)
 
     if (!node)
         return (NULL);
-    temp = new(node->n);
+    temp = new(node->n, node->i);
     return temp;
 }
 t_stack *before_last(t_stack *head)
@@ -80,34 +100,36 @@ t_stack *last(t_stack *head)
 }
 void fill_stack(t_stack **stack)
 {
-    push(stack, new(1));
-    push(stack, new(2));
-    push(stack, new(3));
-    push(stack, new(4));
+    push(stack, new(1, 0));
+    push(stack, new(2, 1));
+    push(stack, new(3, 2));
+    push(stack, new(4, 3));
 }
 void print_stack(t_stack *stack)
 {
     printf("---\n");
     while (stack)
     {
-        printf("-> %d\n", stack->n);
+        printf("-> %d(%d)\n", stack->n, stack->i);
         stack = stack->next;
     }
     printf("\n---\n");
 
-}
-void print_exit(char *msg)
-{
-    printf("%s\n", msg);
-    exit(1);
 }
 int valid(char *num)
 {
     int i;
 
     i = 0;
+    if (ft_strlen(num) > 11)
+        return (0);
     if (num[i] == '-' || num[i] == '+')
         i++;
+    if (num[i] < '0' || num[i] > '9')
+    {
+        printf("valid %s\n", num);
+        return (0);
+    }
     while (num[i])
     {
         if (num[i] < '0' || num[i] > '9')
@@ -141,92 +163,66 @@ void clear(t_stack **head)
         free(temp);
     }
 }
-void sa(t_stack **head)
-{
-    t_stack *tmp1;
-    t_stack *tmp2;
 
-    if ((*head) && (*head)->next)
-    {
-        tmp1 = new((*head)->n);
-        pop(head);
-        tmp2 = new((*head)->n);
-        pop(head);
-        push(head, tmp1);
-        push(head, tmp2);
-    }   
-}
-void pa(t_stack **a, t_stack **b)
-{
-    t_stack *temp;
-    if (!a || !b)
-    {
-        printf("Error\n");
-        exit(1);
-    }
-    if (!is_empty(*b))
-    {
-        temp = dup(*b);
-        pop(b);
-        push(a, temp);
-    }
-}
-void ra(t_stack **a)
-{
-    t_stack *last_a;
-    t_stack *new_head;
+// int verify(char *s)
+// {
+//     int i;
 
-    if (!a || !*a)
-        return;
-    new_head = (*a)->next;
-    last_a = last(*a);
-    last_a->next = *a;
-    (*a)->next = NULL;
-    (*a) = new_head;
-}
-void rra(t_stack **a)
-{
-    t_stack *before_last_a;
-    t_stack *last_a;
-    if (!a || !(*a) || !(*a)->next)
-        return;
-    before_last_a = before_last(*a);
-    last_a = before_last_a->next;
+//     i = 0;
+//     if (s[0] == ' ')
+//         return 0;
+//     if (s[0] == '+')
+//     while (s[i])
+//     {
+//         if (s[i] < '9' )
+//     }
+// }
 
-    last_a->next = *a;
-    before_last_a->next = NULL;
-    *a = last_a;
-}
-int main(int ac, char *av[])
+t_stack *parse(int  ac, char    *av[])
 {
     t_stack *a;
     t_stack *node;
-    char **arr;
+    int x;
+    int y;
     int i;
-    int j;
-    int n;
+    char **arr;
 
-    i = 1;
+    x = 1;
+    i = 0;
     a = NULL;
-    while (i < ac)
+    while (x < ac)
     {
-        j = 0;
-        arr = ft_split(av[i], ' ');
-        while (arr && arr[j])
+        y = 0;
+        arr = ft_split(av[x]);
+        while (arr && arr[y])
         {
-            if (!valid(arr[j]))
+            if (!valid(arr[y]))
                 print_exit("Error\n");
             else
             {
-                node = new(ft_atoi(arr[j]));
-                if (!node)
+                node = new(ft_3atwa(arr[y]), i++);
+                if (!node || exists(a, node))
                     print_exit("Error\n");
                 push(&a, node);
             }
-            j++;
+            y++;
         }
-        i++;
-        free_all(arr, j);
+        x++;
+        free_all(arr, y);
     }
+    return a;
+
+}
+
+int main(int ac, char *av[])
+{
+    t_stack *a;
+    t_stack *b;
+
+    a = NULL;
+    b = NULL;
+    if (ac < 2)
+        print_exit("please enter some numbers");
+    a = parse(ac, av);
     print_stack(a);
 }

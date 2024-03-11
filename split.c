@@ -1,5 +1,15 @@
 #include "push_swap.h"
 
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;
@@ -37,7 +47,7 @@ char	**free_all(char **res, int w)
 	return (NULL);
 }
 
-int	count_words(char const *s1, char c)
+int	count_words(char const *s1)
 {
 	int	count;
 
@@ -46,32 +56,32 @@ int	count_words(char const *s1, char c)
 	{
 		if (*s1 == '\0')
 			return (count);
-		else if (*s1 && *s1 == c)
+		else if (*s1 && *s1 == ' ')
 		{
-			while (*s1 && *s1 == c)
+			while (*s1 && *s1 == ' ')
 				(s1)++;
 		}
 		else if (*s1)
 		{
 			count++;
-			while (*s1 && *s1 != c)
+			while (*s1 && *s1 != ' ')
 				s1++;
 		}
 	}
 	return (count);
 }
 
-char	**handle_null_malloc(char const *s, char c)
+char	**handle_null_malloc(char const *s)
 {
 	char	**res;
 
 	if (!s)
 		return (NULL);
-	res = ((char **)malloc((count_words(s, c) + 1) * sizeof(char *)));
+	res = ((char **)malloc((count_words(s) + 1) * sizeof(char *)));
 	return (res);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char const *s)
 {
 	int		w;
 	char	**res;
@@ -79,18 +89,18 @@ char	**ft_split(char const *s, char c)
 	int		j;
 
 	i = 0;
-	res = handle_null_malloc(s, c);
+	res = handle_null_malloc(s);
 	if (res == NULL)
 		return (NULL);
 	w = 0;
 	while (s[i])
 	{
-		while (s[i] && s[i] == c)
+		while (s[i] && s[i] == ' ')
 			i++;
 		if (!s[i])
 			break ;
 		j = 0;
-		while (s[i] && s[i] != c && ++j)
+		while (s[i] && s[i] != ' ' && ++j)
 			i++;
 		res[w++] = ft_substr(s, i - j, j);
 		if (res[w - 1] == NULL)
