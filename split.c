@@ -77,7 +77,7 @@ int is_num(char c)
 }
 int is_sign(char c)
 {
-	return (c == '+' && c == '-');
+	return (c == '+' || c == '-');
 }
 
 void check_format(char *s)
@@ -87,8 +87,9 @@ void check_format(char *s)
 
 	i = 0;
 	found_num = 0;
-	if (!is_num(s[0]) && !(is_sign(s[0])))
+	if (!is_num(s[0]) && !(is_sign(s[0]) && is_num(s[1])))
 		print_exit("Error in formatting");
+	i++;
 	while (s[i])
 	{
 		if (
