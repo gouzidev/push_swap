@@ -41,8 +41,6 @@ t_stack *new(int n)
 }
 void push(t_stack **head, t_stack *new)
 {
-    t_stack *last;
-
     new->next = *head;
     *head = new;
 }
@@ -214,7 +212,6 @@ int main(int ac, char *av[])
     char **arr;
     int i;
     int j;
-    int n;
 
     i = 1;
     a = NULL;

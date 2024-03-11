@@ -79,7 +79,10 @@ int is_sign(char c)
 {
 	return (c == '+' || c == '-');
 }
-
+int is_space(char c)
+{
+	return (c == ' ');
+}
 void check_format(char *s)
 {
 	int i;
@@ -92,11 +95,12 @@ void check_format(char *s)
 	i++;
 	while (s[i])
 	{
-		if (
-			is_num(s[i]) ||
-			(s[i] == ' ' && is_num(s[i + 1])) ||
-			(s[i] == ' ' && is_sign(s[i + 1]) && is_num(s[i + 2])))
+		if (is_num(s[i]))
 			i++;
+		else if (is_space (s[i]) && is_num(s[i + 1]))
+			i+=2;
+		else if (is_space (s[i]) && is_sign(s[i + 1]) && is_num(s[i + 2]))
+			i+=3;
 		else
 			print_exit("Error");
 	}
