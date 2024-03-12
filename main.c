@@ -149,7 +149,7 @@ void clear(t_stack **head)
         free(temp);
     }
 }
-void sa(t_stack **head)
+void swap_stack(t_stack **head)
 {
     t_stack *tmp1;
     t_stack *tmp2;
@@ -164,7 +164,22 @@ void sa(t_stack **head)
         push(head, tmp2);
     }
 }
-void pa(t_stack **a, t_stack **b)
+void swap_stack(t_stack **a, t_stack **b)
+{
+    t_stack *tmp1;
+    t_stack *tmp2;
+
+    if ((*a) && (*a)->next)
+    {
+        tmp1 = new ((*a)->n);
+        pop(a);
+        tmp2 = new ((*a)->n);
+        pop(a);
+        push(a, tmp1);
+        push(a, tmp2);
+    }
+}
+void push_b_to_a(t_stack **a, t_stack **b)
 {
     t_stack *temp;
     if (!a || !b)
@@ -179,31 +194,93 @@ void pa(t_stack **a, t_stack **b)
         push(a, temp);
     }
 }
-void ra(t_stack **a)
+void push_a_to_b(t_stack **a, t_stack **b)
+{
+    t_stack *temp;
+    if (!a || !b)
+    {
+        printf("Error\n");
+        exit(1);
+    }
+    if (!is_empty(*a))
+    {
+        temp = dup(*a);
+        pop(a);
+        push(b, temp);
+    }
+}
+void rotate_stack(t_stack **stack)
 {
     t_stack *last_a;
     t_stack *new_head;
 
+    if (!stack || !*stack)
+        return;
+    new_head = (*stack)->next;
+    last_a = last(*stack);
+    if (last_a)
+        last_a->next = *stack;
+    (*stack)->next = NULL;
+    (*stack) = new_head;
+}
+void rotate_ab(t_stack **a, t_stack **b)
+{
+    t_stack *last_a;
+    t_stack *last_b;
+    t_stack *new_head_a;
+    t_stack *new_head_b;
+
     if (!a || !*a)
         return;
-    new_head = (*a)->next;
+    if (!b || !*b)
+        return;
+    new_head_a = (*a)->next;
+    new_head_b = (*b)->next;
     last_a = last(*a);
-    last_a->next = *a;
+    last_b = last(*b);
+    if (last_a)
+        last_a->next = *a;
+    if (last_b)
+        last_b->next = *b;
     (*a)->next = NULL;
-    (*a) = new_head;
+    (*b)->next = NULL;
+    (*a) = new_head_a;
+    (*b) = new_head_b;
 }
-void rra(t_stack **a)
+void reverse_rotate_stack(t_stack **stack)
 {
-    t_stack *before_last_a;
-    t_stack *last_a;
+    t_stack *before_last_node;
+    t_stack *last_node;
+    if (!stack || !(*stack) || !(*stack)->next)
+        return;
+    before_last_node = before_last(*stack);
+    last_node = before_last_node->next;
+
+    last_node->next = *stack;
+    before_last_node->next = NULL;
+    *stack = last_node;
+}
+void reverse_rotate_ab(t_stack **a, t_stack **b)
+{
+    t_stack *before_last_node_a;
+    t_stack *before_last_node_b;
+    t_stack *last_node_a;
+    t_stack *last_node_b;
     if (!a || !(*a) || !(*a)->next)
         return;
-    before_last_a = before_last(*a);
-    last_a = before_last_a->next;
+    if (!b || !(*b) || !(*b)->next)
+        return;
+    before_last_node_a = before_last(*a);
+    before_last_node_b = before_last(*b);
+    last_node_a = before_last_node_a->next;
+    last_node_b = before_last_node_b->next;
 
-    last_a->next = *a;
-    before_last_a->next = NULL;
-    *a = last_a;
+    last_node_a->next = *a;
+    last_node_b->next = *b;
+    before_last_node_a->next = NULL;
+    before_last_node_b->next = NULL;
+    *a = last_node_a;
+    *b = last_node_b;
 }
 int main(int ac, char *av[])
 {
