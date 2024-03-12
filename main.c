@@ -2,25 +2,27 @@
 
 int ft_atoi(const char *str)
 {
-    int i;
-    int sign;
-    int res;
+	int	    i;
+	int	    sign;
+	long    res;
 
-    res = 0;
-    sign = 1;
-    i = 0;
-    if (str[i] == '-' || str[i] == '+')
-    {
-        if (str[i] == '-')
-            sign = -1;
-        i++;
-    }
-    while (str[i] >= '0' && str[i] <= '9')
-    {
-        res = res * 10 + (str[i] - 48);
-        i++;
-    }
-    return (res * sign);
+	res = 0;
+	sign = 1;
+	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + (str[i] - 48);
+        if (res > INT_MAX || (res * sign) < INT_MIN)
+            print_exit("laaaarge number");
+		i++;
+	}
+	return (res * sign);
 }
 int is_empty(t_stack *head)
 {
@@ -154,7 +156,7 @@ void swap_stack(t_stack **head)
     t_stack *tmp1;
     t_stack *tmp2;
 
-    if ((*head) && (*head)->next)
+    if ((*head) && (*head)->    next)
     {
         tmp1 = new ((*head)->n);
         pop(head);
@@ -164,21 +166,21 @@ void swap_stack(t_stack **head)
         push(head, tmp2);
     }
 }
-void swap_stack(t_stack **a, t_stack **b)
-{
-    t_stack *tmp1;
-    t_stack *tmp2;
+// void swap_stack_ab(t_stack **a, t_stack **b)
+// {
+//     t_stack *tmp1;
+//     t_stack *tmp2;
 
-    if ((*a) && (*a)->next)
-    {
-        tmp1 = new ((*a)->n);
-        pop(a);
-        tmp2 = new ((*a)->n);
-        pop(a);
-        push(a, tmp1);
-        push(a, tmp2);
-    }
-}
+//     if ((*a) && (*a)->next)
+//     {
+//         tmp1 = new ((*a)->n);
+//         pop(a);
+//         tmp2 = new ((*a)->n);
+//         pop(a);
+//         push(a, tmp1);
+//         push(a, tmp2);
+//     }
+// }
 void push_b_to_a(t_stack **a, t_stack **b)
 {
     t_stack *temp;
@@ -282,6 +284,19 @@ void reverse_rotate_ab(t_stack **a, t_stack **b)
     *a = last_node_a;
     *b = last_node_b;
 }
+int is_empty(char   *s)
+{
+    int i;
+
+    i = 0;
+    while (s[i])
+    {
+        if (s[i] != ' ')
+            return 1;
+        i++;
+    }
+    return 0;
+}
 int main(int ac, char *av[])
 {
     t_stack *a;
@@ -295,10 +310,14 @@ int main(int ac, char *av[])
     while (i < ac)
     {
         j = 0;
-        check_format(av[i]);
+        // check_format(av[i]);
         arr = ft_split(av[i], ' ');
+        if (arr == NULL)
+            print_exit("Error\n");
         while (arr && arr[j])
         {
+            if (is_empty(arr[j]))
+                print_exit("Error\n");
             if (!valid(arr[j]))
                 print_exit("Error\n");
             else
