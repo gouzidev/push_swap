@@ -24,12 +24,6 @@ int ft_atoi(const char *str)
 	}
 	return (res * sign);
 }
-int is_empty(t_stack *head)
-{
-    if (head)
-        return 0;
-    return 1;
-}
 t_stack *new(int n)
 {
     t_stack *new_node;
@@ -189,7 +183,7 @@ void push_b_to_a(t_stack **a, t_stack **b)
         printf("Error\n");
         exit(1);
     }
-    if (!is_empty(*b))
+    if (*b)
     {
         temp = dup(*b);
         pop(b);
@@ -204,7 +198,7 @@ void push_a_to_b(t_stack **a, t_stack **b)
         printf("Error\n");
         exit(1);
     }
-    if (!is_empty(*a))
+    if (*a)
     {
         temp = dup(*a);
         pop(a);
@@ -292,10 +286,10 @@ int is_empty(char   *s)
     while (s[i])
     {
         if (s[i] != ' ')
-            return 1;
+            return 0;
         i++;
     }
-    return 0;
+    return 1;
 }
 int main(int ac, char *av[])
 {
@@ -317,9 +311,9 @@ int main(int ac, char *av[])
         while (arr && arr[j])
         {
             if (is_empty(arr[j]))
-                print_exit("Error\n");
+                print_exit("Error (empty)\n");
             if (!valid(arr[j]))
-                print_exit("Error\n");
+                print_exit("Error (not valid)\n");
             else
             {
                 node = new (ft_atoi(arr[j]));
