@@ -164,7 +164,6 @@ void swap_stack(t_stack **head)
 // {
 //     t_stack *tmp1;
 //     t_stack *tmp2;
-
 //     if ((*a) && (*a)->next)
 //     {
 //         tmp1 = new ((*a)->n);
@@ -291,13 +290,57 @@ int is_empty(char   *s)
     }
     return 1;
 }
+
+int *make_arr(t_stack *head, int *arr_size)
+{
+    int *arr;
+    int i;
+
+    *arr_size = size(head);
+    arr = malloc((*arr_size + 1) * sizeof(int));
+    i = 0;
+    while (head && i < *arr_size)
+    {
+        arr[i++] = head->n;
+        head = head->next;
+    }
+    i = 0;
+    return arr;
+}
+
+void sort_arr(int   *arr, int arr_size)
+{
+    int i;
+    int j;
+    int temp;
+
+    i = 0;
+    while (i < arr_size)
+    {
+        j = 0;
+        while (j < arr_size - 1)
+        {
+            if (arr[j] < arr[j + 1])
+            {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
 int main(int ac, char *av[])
 {
     t_stack *a;
     t_stack *node;
-    char **arr;
+    char **split_arr;
+    int *nums_arr;
     int i;
     int j;
+    int arr_size;
 
     i = 1;
     a = NULL;
@@ -305,18 +348,18 @@ int main(int ac, char *av[])
     {
         j = 0;
         // check_format(av[i]);
-        arr = ft_split(av[i], ' ');
-        if (arr == NULL)
+        split_arr = ft_split(av[i], ' ');
+        if (split_arr == NULL)
             print_exit("Error\n");
-        while (arr && arr[j])
+        while (split_arr && split_arr[j])
         {
-            if (is_empty(arr[j]))
+            if (is_empty(split_arr[j]))
                 print_exit("Error (empty)\n");
-            if (!valid(arr[j]))
+            if (!valid(split_arr[j]))
                 print_exit("Error (not valid)\n");
             else
             {
-                node = new (ft_atoi(arr[j]));
+                node = new (ft_atoi(split_arr[j]));
                 if (!node || exists(a, node))
                     print_exit("Error");
                 push(&a, node);
@@ -324,7 +367,14 @@ int main(int ac, char *av[])
             j++;
         }
         i++;
-        free_all(arr, j);
+        free_all(split_arr, j);
     }
+    nums_arr = make_arr(a, &arr_size);
+    i = 0;
+    sort_arr(nums_arr, arr_size);
+    while (i < arr_size)
+        printf(" %d  \n", nums_arr[i++]);
     print_stack(a);
 }
+
+// find the smallest 
