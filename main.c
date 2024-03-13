@@ -2,31 +2,27 @@
 
 int ft_atoi(const char *str)
 {
-    int i;
-    int sign;
-    int res;
+	int	    i;
+	int	    sign;
+	long    res;
 
-    res = 0;
-    sign = 1;
-    i = 0;
-    if (str[i] == '-' || str[i] == '+')
-    {
-        if (str[i] == '-')
-            sign = -1;
-        i++;
-    }
-    while (str[i] >= '0' && str[i] <= '9')
-    {
-        res = res * 10 + (str[i] - 48);
-        i++;
-    }
-    return (res * sign);
-}
-int is_empty(t_stack *head)
-{
-    if (head)
-        return 0;
-    return 1;
+	res = 0;
+	sign = 1;
+	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + (str[i] - 48);
+        if (res > INT_MAX || (res * sign) < INT_MIN)
+            print_exit("laaaarge number");
+		i++;
+	}
+	return (res * sign);
 }
 t_stack *new(int n)
 {
@@ -41,8 +37,6 @@ t_stack *new(int n)
 }
 void push(t_stack **head, t_stack *new)
 {
-    t_stack *last;
-
     new->next = *head;
     *head = new;
 }
@@ -151,12 +145,12 @@ void clear(t_stack **head)
         free(temp);
     }
 }
-void sa(t_stack **head)
+void swap_stack(t_stack **head)
 {
     t_stack *tmp1;
     t_stack *tmp2;
 
-    if ((*head) && (*head)->next)
+    if ((*head) && (*head)->    next)
     {
         tmp1 = new ((*head)->n);
         pop(head);
@@ -166,7 +160,21 @@ void sa(t_stack **head)
         push(head, tmp2);
     }
 }
-void pa(t_stack **a, t_stack **b)
+// void swap_stack_ab(t_stack **a, t_stack **b)
+// {
+//     t_stack *tmp1;
+//     t_stack *tmp2;
+//     if ((*a) && (*a)->next)
+//     {
+//         tmp1 = new ((*a)->n);
+//         pop(a);
+//         tmp2 = new ((*a)->n);
+//         pop(a);
+//         push(a, tmp1);
+//         push(a, tmp2);
+//     }
+// }
+void push_b_to_a(t_stack **a, t_stack **b)
 {
     t_stack *temp;
     if (!a || !b)
@@ -174,62 +182,184 @@ void pa(t_stack **a, t_stack **b)
         printf("Error\n");
         exit(1);
     }
-    if (!is_empty(*b))
+    if (*b)
     {
         temp = dup(*b);
         pop(b);
         push(a, temp);
     }
 }
-void ra(t_stack **a)
+void push_a_to_b(t_stack **a, t_stack **b)
+{
+    t_stack *temp;
+    if (!a || !b)
+    {
+        printf("Error\n");
+        exit(1);
+    }
+    if (*a)
+    {
+        temp = dup(*a);
+        pop(a);
+        push(b, temp);
+    }
+}
+void rotate_stack(t_stack **stack)
 {
     t_stack *last_a;
     t_stack *new_head;
 
+    if (!stack || !*stack)
+        return;
+    new_head = (*stack)->next;
+    last_a = last(*stack);
+    if (last_a)
+        last_a->next = *stack;
+    (*stack)->next = NULL;
+    (*stack) = new_head;
+}
+void rotate_ab(t_stack **a, t_stack **b)
+{
+    t_stack *last_a;
+    t_stack *last_b;
+    t_stack *new_head_a;
+    t_stack *new_head_b;
+
     if (!a || !*a)
         return;
-    new_head = (*a)->next;
+    if (!b || !*b)
+        return;
+    new_head_a = (*a)->next;
+    new_head_b = (*b)->next;
     last_a = last(*a);
-    last_a->next = *a;
+    last_b = last(*b);
+    if (last_a)
+        last_a->next = *a;
+    if (last_b)
+        last_b->next = *b;
     (*a)->next = NULL;
-    (*a) = new_head;
+    (*b)->next = NULL;
+    (*a) = new_head_a;
+    (*b) = new_head_b;
 }
-void rra(t_stack **a)
+void reverse_rotate_stack(t_stack **stack)
 {
-    t_stack *before_last_a;
-    t_stack *last_a;
+    t_stack *before_last_node;
+    t_stack *last_node;
+    if (!stack || !(*stack) || !(*stack)->next)
+        return;
+    before_last_node = before_last(*stack);
+    last_node = before_last_node->next;
+
+    last_node->next = *stack;
+    before_last_node->next = NULL;
+    *stack = last_node;
+}
+void reverse_rotate_ab(t_stack **a, t_stack **b)
+{
+    t_stack *before_last_node_a;
+    t_stack *before_last_node_b;
+    t_stack *last_node_a;
+    t_stack *last_node_b;
     if (!a || !(*a) || !(*a)->next)
         return;
-    before_last_a = before_last(*a);
-    last_a = before_last_a->next;
+    if (!b || !(*b) || !(*b)->next)
+        return;
+    before_last_node_a = before_last(*a);
+    before_last_node_b = before_last(*b);
+    last_node_a = before_last_node_a->next;
+    last_node_b = before_last_node_b->next;
 
-    last_a->next = *a;
-    before_last_a->next = NULL;
-    *a = last_a;
+    last_node_a->next = *a;
+    last_node_b->next = *b;
+    before_last_node_a->next = NULL;
+    before_last_node_b->next = NULL;
+    *a = last_node_a;
+    *b = last_node_b;
 }
+int is_empty(char   *s)
+{
+    int i;
+
+    i = 0;
+    while (s[i])
+    {
+        if (s[i] != ' ')
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
+int *make_arr(t_stack *head, int *arr_size)
+{
+    int *arr;
+    int i;
+
+    *arr_size = size(head);
+    arr = malloc((*arr_size + 1) * sizeof(int));
+    i = 0;
+    while (head && i < *arr_size)
+    {
+        arr[i++] = head->n;
+        head = head->next;
+    }
+    i = 0;
+    return arr;
+}
+
+void sort_arr(int   *arr, int arr_size)
+{
+    int i;
+    int j;
+    int temp;
+
+    i = 0;
+    while (i < arr_size)
+    {
+        j = 0;
+        while (j < arr_size - 1)
+        {
+            if (arr[j] < arr[j + 1])
+            {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
 int main(int ac, char *av[])
 {
     t_stack *a;
     t_stack *node;
-    char **arr;
+    char **split_arr;
+    int *nums_arr;
     int i;
     int j;
-    int n;
+    int arr_size;
 
     i = 1;
     a = NULL;
     while (i < ac)
     {
         j = 0;
-        check_format(av[i]);
-        arr = ft_split(av[i], ' ');
-        while (arr && arr[j])
+        // check_format(av[i]);
+        split_arr = ft_split(av[i], ' ');
+        if (split_arr == NULL)
+            print_exit("Error\n");
+        while (split_arr && split_arr[j])
         {
-            if (!valid(arr[j]))
-                print_exit("Error\n");
+            if (is_empty(split_arr[j]))
+                print_exit("Error (empty)\n");
+            if (!valid(split_arr[j]))
+                print_exit("Error (not valid)\n");
             else
             {
-                node = new (ft_atoi(arr[j]));
+                node = new (ft_atoi(split_arr[j]));
                 if (!node || exists(a, node))
                     print_exit("Error");
                 push(&a, node);
@@ -237,7 +367,14 @@ int main(int ac, char *av[])
             j++;
         }
         i++;
-        free_all(arr, j);
+        free_all(split_arr, j);
     }
+    nums_arr = make_arr(a, &arr_size);
+    i = 0;
+    sort_arr(nums_arr, arr_size);
+    while (i < arr_size)
+        printf(" %d  \n", nums_arr[i++]);
     print_stack(a);
 }
+
+// find the smallest 
