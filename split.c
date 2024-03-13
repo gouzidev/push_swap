@@ -79,7 +79,6 @@ int is_sign(char c)
 {
 	return (c == '+' || c == '-');
 }
-
 void check_format(char *s)
 {
 	int i;
@@ -101,7 +100,6 @@ void check_format(char *s)
 			print_exit("Error");
 	}
 }
-
 char **ft_split(char const *s, char c)
 {
 	int w;
