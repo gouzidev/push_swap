@@ -105,7 +105,6 @@ void check_format(char *s)
 			print_exit("Error");
 	}
 }
-
 char **ft_split(char const *s, char c)
 {
 	int w;
