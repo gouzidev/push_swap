@@ -99,6 +99,8 @@ int valid(char *num)
     i = 0;
     if (num[i] == '-' || num[i] == '+')
         i++;
+    if (num[i] < '0' || num[i] > '9')
+        return (0);
     while (num[i])
     {
         if (num[i] < '0' || num[i] > '9')
@@ -290,7 +292,6 @@ int is_empty(char   *s)
     }
     return 1;
 }
-
 int *make_arr(t_stack *head, int *arr_size)
 {
     int *arr;
@@ -307,7 +308,6 @@ int *make_arr(t_stack *head, int *arr_size)
     i = 0;
     return arr;
 }
-
 void sort_arr(int   *arr, int arr_size)
 {
     int i;
@@ -331,16 +331,13 @@ void sort_arr(int   *arr, int arr_size)
         i++;
     }
 }
-
-int main(int ac, char *av[])
+t_stack *parse(int ac, char *av[])
 {
     t_stack *a;
     t_stack *node;
     char **split_arr;
-    int *nums_arr;
     int i;
     int j;
-    int arr_size;
 
     i = 1;
     a = NULL;
@@ -369,12 +366,58 @@ int main(int ac, char *av[])
         i++;
         free_all(split_arr, j);
     }
+    
+    return a;
+}
+int main(int ac, char *av[])
+{
+    t_stack *a;
+    t_stack *b;
+    int *nums_arr;
+    int i;
+    int n;
+    int mid;
+    int div;
+    int start;
+    int end;
+    int offset;
+    int arr_size;
+
+    i = 1;
+    a = NULL;
+    b = NULL;
+    a = parse(ac, av);
+    print_stack(a);
     nums_arr = make_arr(a, &arr_size);
     i = 0;
     sort_arr(nums_arr, arr_size);
     while (i < arr_size)
-        printf(" %d  \n", nums_arr[i++]);
-    print_stack(a);
+        printf(" %d  ", nums_arr[i++]);
+    mid = arr_size / 2;
+    div =  nums_arr[mid];
+    offset =  arr_size / div;
+    start =  mid + offset;
+    end =  mid - offset;
+    while (a)
+    {
+        n = a->n;
+        if  (a->n >= nums_arr[start] && a->n <= nums_arr[end])
+        {
+            a = a->next;
+            push_a_to_b(&a, &b);
+            if (a && a->n  <  nums_arr[mid])
+                rotate_stack(&b);
+        }
+        else
+            rotate_stack(&a);
+    }
+    start = start + offset;
+    end = end - offset;
+    if (start >= arr_size)
+        start = arr_size - 1;
+    if (end <= 0)
+        end = 0;
+    print_stack(b);
 }
 
 // find the smallest 
