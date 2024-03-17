@@ -178,8 +178,6 @@ void	push_a_to_b(t_stack **a, t_stack **b)
 		temp = duplicate(*a);
 		pop(a);
 		push(b, temp);
-		printf("head of a -> %d\n", (*a)->n);
-		printf("head of b -> %d\n", (*b)->n);
 	}
 	if (a)
 		give_index(*a);
@@ -398,6 +396,7 @@ int	main(int ac, char *av[])
 			{
 				printf("in range [%d, %d] -> %d\n", array[start] , array[end], a->n);
 				printf("1\n");
+				printf("a -> %d  b -> %d\n", a->n, b->n);
 				push_a_to_b(&a, &b);
 				if (b->n < array[mid])
 					rotate_stack(&b);
@@ -415,7 +414,6 @@ int	main(int ac, char *av[])
 						// {
 						while (count-- > 0)
 							rotate_stack(&a);
-					
 						push_a_to_b(&a, &b);
 						print_stack(b);
 						if (b->n < array[mid])
@@ -427,7 +425,13 @@ int	main(int ac, char *av[])
 					count++;
 				}
 			}
-			a = a->next;
+			if (a)
+				a = a->next;
+			else
+			{
+				printf("break\n");
+				break;
+			}
 		}
 		printf("end -> %d\n", end);
 		printf("start -> %d\n", start);
