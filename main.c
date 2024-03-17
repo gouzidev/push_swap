@@ -41,6 +41,7 @@ void	push(t_stack **head, t_stack *new)
         return;
 	new->next = *head;
 	*head = new;
+    give_index(*head);
 }
 void	pop(t_stack **head)
 {
@@ -158,9 +159,9 @@ void	push_b_to_a(t_stack **a, t_stack **b)
 		pop(b);
 		push(a, temp);
 	}
-	if (a)
+	if (*a)
 		give_index(*a);
-	if (b)
+	if (*b)
 		give_index(*b);
 
 }
@@ -179,9 +180,9 @@ void	push_a_to_b(t_stack **a, t_stack **b)
 		pop(a);
 		push(b, temp);
 	}
-	if (a)
+	if (*a)
 		give_index(*a);
-	if (b)
+	if (*b)
 		give_index(*b);
 }
 void	rotate_stack(t_stack **stack)
@@ -335,6 +336,27 @@ t_stack	*parse(int ac, char *av[])
 	}
 	return (a);
 }
+
+
+void print_info(int start, int end, int mid, int *array, int arr_size, int div, int offset)
+{
+    printf("start  -> %d\n", start);
+	printf("end  -> %d\n", end);
+	printf("mid  -> %d\n", mid);
+	printf("range [%d, %d]\n", array[start], array[end]);
+	printf("arr_size  -> %d\n", arr_size);
+	printf("div  -> %d\n", div);
+	printf("offset  -> %d\n", offset);
+}
+void set_offset(int *start, int *end, int offset, int arr_size)
+{
+    *end = *end + offset;
+    *start = *start - offset;
+    if (*end >= arr_size)
+        *end = arr_size - 1;
+    if (*start <= 0)
+        *start = 0;
+}
 void	give_index(t_stack *head)
 {
 	t_stack	*curr;
@@ -355,7 +377,7 @@ int	main(int ac, char *av[])
 	t_stack	*a;
 	t_stack	*b;
 	t_stack	*temp;
-	t_stack	*curr;
+	t_stack	*head;
 	int		*array;
 	int		i;
 	int		mid;
@@ -374,30 +396,31 @@ int	main(int ac, char *av[])
 	array = make_arr(a, &arr_size);
 	i = 0;
 	sort_arr(array, arr_size);
-	mid = arr_size / 2 - 1;
+    start = 0;
+    end = arr_size - 1;
+	mid = arr_size / 2;
 	div = array[mid];
 	offset = arr_size / mid;
-	start = mid - offset;
-	end = mid + offset;
-	printf("start  -> %d\n", start);
-	printf("end  -> %d\n", end);
-	printf("mid  -> %d\n", mid);
-	printf("range [%d, %d]\n", array[start], array[end]);
-	printf("arr_size  -> %d\n", arr_size);
-	printf("div  -> %d\n", div);
-	printf("offset  -> %d\n", offset);
-	while (a)
+	set_offset(&start, &end, offset, arr_size);
+    print_info(start, end, mid, array, arr_size, div, offset);
+    int a_size = size(a);
+    int index = 0;
+    head = a;
+	while (index < a_size)
 	{
-		curr = a;
+        a = head;
 		while (a)
 		{
-			printf("checking -> %d\n", a->n);
 			if (a->n >= array[start] && a->n <= array[end])
 			{
-				printf("in range [%d, %d] -> %d\n", array[start] , array[end], a->n);
-				printf("1\n");
-				printf("a -> %d  b -> %d\n", a->n, b->n);
+                printf("a  -> \n");
+                print_stack(a);
+                printf("b  -> \n");
+                print_stack(b);
 				push_a_to_b(&a, &b);
+                index--;
+                if (index == 0)
+                    break;
 				if (b->n < array[mid])
 					rotate_stack(&b);
 			}
@@ -409,39 +432,26 @@ int	main(int ac, char *av[])
 				{
 					if (temp->n >= array[start] && temp->n <= array[end])
 					{
-						printf("found it [in range]-> %d\n", temp->n);
-						// if (temp->i < mid)
-						// {
 						while (count-- > 0)
 							rotate_stack(&a);
 						push_a_to_b(&a, &b);
+                        index--;
+                        if (index == 0)
+                            break;
 						print_stack(b);
 						if (b->n < array[mid])
 							rotate_stack(&b);
 						break ;
-						// }
 					}
 					temp = temp->next;
 					count++;
 				}
 			}
-			if (a)
-				a = a->next;
-			else
-			{
-				printf("break\n");
-				break;
-			}
 		}
-		printf("end -> %d\n", end);
-		printf("start -> %d\n", start);
-		a = curr;
-		end = end + offset;
-		start = start - offset;
-		if (end >= arr_size)
-			end = arr_size - 1;
-		if (start <= 0)
-			start = 0;
+		
+	    set_offset(&start, &end, offset, arr_size);
+        print_info(start, end, mid, array, arr_size, div, offset);
+        index++;
 	}
 	print_stack(b);
 }
