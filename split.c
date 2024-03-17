@@ -1,15 +1,5 @@
 #include "push_swap.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;
@@ -47,7 +37,7 @@ char	**free_all(char **res, int w)
 	return (NULL);
 }
 
-int	count_words(char const *s1)
+int	count_words(char const *s1, char c)
 {
 	int	count;
 
@@ -56,51 +46,85 @@ int	count_words(char const *s1)
 	{
 		if (*s1 == '\0')
 			return (count);
-		else if (*s1 && *s1 == ' ')
+		else if (*s1 && *s1 == c)
 		{
-			while (*s1 && *s1 == ' ')
+			while (*s1 && *s1 == c)
 				(s1)++;
 		}
 		else if (*s1)
 		{
 			count++;
-			while (*s1 && *s1 != ' ')
+			while (*s1 && *s1 != c)
 				s1++;
 		}
 	}
 	return (count);
 }
 
-char	**handle_null_malloc(char const *s)
+char	**handle_null_malloc(char const *s, char c)
 {
 	char	**res;
 
 	if (!s)
 		return (NULL);
-	res = ((char **)malloc((count_words(s) + 1) * sizeof(char *)));
+	res = ((char **)malloc((count_words(s, c) + 1) * sizeof(char *)));
 	return (res);
 }
 
-char	**ft_split(char const *s)
+int	is_num(char c)
 {
-	int		w;
-	char	**res;
-	int		i;
-	int		j;
+	return (c <= '9' && c >= '0');
+}
+int	is_sign(char c)
+{
+	return (c == '+' || c == '-');
+}
+int	is_space(char c)
+{
+	return (c == ' ');
+}
+void	check_format(char *s)
+{
+	int	i;
+	int	found_num;
 
 	i = 0;
-	res = handle_null_malloc(s);
+	found_num = 0;
+	if (!is_num(s[0]) && !(is_sign(s[0]) && is_num(s[1])))
+		print_exit("Error in formatting");
+	i++;
+	while (s[i])
+	{
+		if (is_num(s[i]))
+			i++;
+		else if (is_space(s[i]) && is_num(s[i + 1]))
+			i += 2;
+		else if (is_space(s[i]) && is_sign(s[i + 1]) && is_num(s[i + 2]))
+			i += 3;
+		else
+			print_exit("Error");
+	}
+}
+char	**ft_split(char const *s, char c)
+{
+	int w;
+	char **res;
+	int i;
+	int j;
+
+	i = 0;
+	res = handle_null_malloc(s, c);
 	if (res == NULL)
 		return (NULL);
 	w = 0;
 	while (s[i])
 	{
-		while (s[i] && s[i] == ' ')
+		while (s[i] && s[i] == c)
 			i++;
 		if (!s[i])
 			break ;
 		j = 0;
-		while (s[i] && s[i] != ' ' && ++j)
+		while (s[i] && s[i] != c && ++j)
 			i++;
 		res[w++] = ft_substr(s, i - j, j);
 		if (res[w - 1] == NULL)
