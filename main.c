@@ -49,7 +49,7 @@ void pop(t_stack **head)
     *head = (*head)->next;
     free(temp);
 }
-t_stack *dup(t_stack *node)
+t_stack *duplicate(t_stack *node)
 {
     t_stack *temp;
 
@@ -186,7 +186,7 @@ void push_b_to_a(t_stack **a, t_stack **b)
     }
     if (*b)
     {
-        temp = dup(*b);
+        temp = duplicate(*b);
         pop(b);
         push(a, temp);
     }
@@ -201,7 +201,7 @@ void push_a_to_b(t_stack **a, t_stack **b)
     }
     if (*a)
     {
-        temp = dup(*a);
+        temp = duplicate(*a);
         pop(a);
         push(b, temp);
     }
@@ -373,6 +373,8 @@ int main(int ac, char *av[])
 {
     t_stack *a;
     t_stack *b;
+    t_stack *temp;
+    t_stack *next;
     int *nums_arr;
     int i;
     int n;
@@ -398,25 +400,36 @@ int main(int ac, char *av[])
     offset =  arr_size / div;
     start =  mid + offset;
     end =  mid - offset;
-    while (a)
+    temp = a;
+    int l = size(a);
+    int d = size(a);
+    while (l--)
     {
-        n = a->n;
-        if  (a->n >= nums_arr[start] && a->n <= nums_arr[end])
+        temp = a;
+        d = size(a);
+        while (d--)
         {
-            a = a->next;
-            push_a_to_b(&a, &b);
-            if (a && a->n  <  nums_arr[mid])
-                rotate_stack(&b);
+            next = temp->next;
+            n = a->n;
+            if  (a->n >= nums_arr[start] && a->n <= nums_arr[end])
+            {
+                push_a_to_b(&a, &b);
+                if (n < nums_arr[mid])
+                    rotate_stack(&b);
+            }
+            else
+                rotate_stack(&a);
         }
-        else
-            rotate_stack(&a);
+        printf("fffff\n");
+
+        start = start + offset;
+        end = end - offset;
+        if (start >= arr_size)
+            start = arr_size - 1;
+        if (end <= 0)
+            end = 0;
     }
-    start = start + offset;
-    end = end - offset;
-    if (start >= arr_size)
-        start = arr_size - 1;
-    if (end <= 0)
-        end = 0;
+
     print_stack(b);
 }
 
