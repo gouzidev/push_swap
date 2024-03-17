@@ -29,7 +29,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return ((char *)sub);
 }
 
-char	**free_all(char **res, int w)
+char **free_all(char **res, int w)
 {
 	while (w-- > 0)
 		free(res[w]);
@@ -39,7 +39,7 @@ char	**free_all(char **res, int w)
 
 int	count_words(char const *s1, char c)
 {
-	int	count;
+	int count;
 
 	count = 0;
 	while (*s1)
@@ -63,7 +63,7 @@ int	count_words(char const *s1, char c)
 
 char	**handle_null_malloc(char const *s, char c)
 {
-	char	**res;
+	char **res;
 
 	if (!s)
 		return (NULL);
@@ -122,7 +122,7 @@ char	**ft_split(char const *s, char c)
 		while (s[i] && s[i] == c)
 			i++;
 		if (!s[i])
-			break ;
+			break;
 		j = 0;
 		while (s[i] && s[i] != c && ++j)
 			i++;
