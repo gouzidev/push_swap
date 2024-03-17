@@ -3,14 +3,15 @@ NAME = push_swap
 FLAGS = -Wall -Wextra -Werror
 LEAK = -fsanitize=address
 
-SRCS = main.c split.c
+SRCS = main.c split.c helper.c verify.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(OBJS)
-	$(CC) $(FLAGS) $^ -o $(NAME)
+	$(CC)  $^ -o $(NAME)
+	rm -rf $(OBJS)
 
 %o:%c
-	$(CC) $(FLAGS) -c $< 
+	$(CC)  -c $< 
 re:	fclean all
 
 clean:

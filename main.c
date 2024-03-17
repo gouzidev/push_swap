@@ -1,10 +1,10 @@
 #include "push_swap.h"
 
-int ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
-	int	    i;
-	int	    sign;
-	long    res;
+	int		i;
+	int		sign;
+	long	res;
 
 	res = 0;
 	sign = 1;
@@ -18,149 +18,116 @@ int ft_atoi(const char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		res = res * 10 + (str[i] - 48);
-        if (res > INT_MAX || (res * sign) < INT_MIN)
-            print_exit("laaaarge number");
+		if (res > INT_MAX || (res * sign) < INT_MIN)
+			print_exit("laaaarge number");
 		i++;
 	}
 	return (res * sign);
 }
-t_stack *new(int n)
+t_stack *new (int n)
 {
-    t_stack *new_node;
+	t_stack	*new_node;
 
-    new_node = malloc(sizeof(t_stack));
-    if (new_node == 0)
-        return (0);
-    new_node->next = NULL;
-    new_node->n = n;
-    return (new_node);
+	new_node = malloc(sizeof(t_stack));
+	if (new_node == 0)
+		return (0);
+	new_node->next = NULL;
+	new_node->n = n;
+	return (new_node);
 }
-void push(t_stack **head, t_stack *new)
+void	push(t_stack **head, t_stack *new)
 {
-    new->next = *head;
-    *head = new;
-}
-void pop(t_stack **head)
-{
-    t_stack *temp;
-    if (!*head)
+    if (!new || !head)
         return;
-    temp = *head;
-    *head = (*head)->next;
-    free(temp);
+	new->next = *head;
+	*head = new;
 }
-t_stack *duplicate(t_stack *node)
+void	pop(t_stack **head)
 {
-    t_stack *temp;
+	t_stack	*temp;
 
-    if (!node)
-        return (NULL);
-    temp = new (node->n);
-    return temp;
+	if (!*head)
+		return ;
+	temp = *head;
+	*head = (*head)->next;
+	free(temp);
 }
-t_stack *before_last(t_stack *head)
+t_stack	*duplicate(t_stack *node)
 {
-    while (head && head->next && head->next->next)
-        head = head->next;
-    return head;
-}
-t_stack *last(t_stack *head)
-{
-    while (head && head->next)
-        head = head->next;
-    return head;
-}
-void fill_stack(t_stack **stack)
-{
-    push(stack, new (1));
-    push(stack, new (2));
-    push(stack, new (3));
-    push(stack, new (4));
-}
-void print_stack(t_stack *stack)
-{
-    printf("---\n");
-    while (stack)
-    {
-        printf("-> %d\n", stack->n);
-        stack = stack->next;
-    }
-    printf("\n---\n");
-}
-void print_exit(char *msg)
-{
-    printf("%s\n", msg);
-    exit(1);
-}
-int valid(char *num)
-{
-    int i;
+	t_stack	*temp;
 
-    i = 0;
-    if (num[i] == '-' || num[i] == '+')
-        i++;
-    if (num[i] < '0' || num[i] > '9')
-        return (0);
-    while (num[i])
-    {
-        if (num[i] < '0' || num[i] > '9')
-            return (0);
-        i++;
-    }
-    return (1);
+	if (!node)
+		return (NULL);
+	temp = new (node->n);
+	if (temp == NULL)
+		return NULL;
+	return (temp);
 }
-int size(t_stack *stack)
+t_stack	*before_last(t_stack *head)
 {
-    int i;
-
-    i = 0;
-    while (stack)
-    {
-        i++;
-        stack = stack->next;
-    }
-    return i;
+	while (head && head->next && head->next->next)
+		head = head->next;
+	return (head);
 }
-int exists(t_stack *stack, t_stack *node)
-{
-    t_stack *temp;
 
-    temp = stack;
-    while (temp)
-    {
-        if (temp->n == node->n)
-            return (1);
-        temp = temp->next;
-    }
-    return (0);
+t_stack	*last(t_stack *head)
+{
+	while (head && head->next)
+		head = head->next;
+	return (head);
 }
-void clear(t_stack **head)
+int	size(t_stack *stack)
 {
-    t_stack *curr;
-    t_stack *temp;
+	int	i;
 
-    curr = *head;
-    while (curr)
-    {
-        temp = curr;
-        curr = curr->next;
-        free(temp);
-    }
+	i = 0;
+	while (stack)
+	{
+		i++;
+		stack = stack->next;
+	}
+	return (i);
 }
-void swap_stack(t_stack **head)
+int	exists(t_stack *stack, t_stack *node)
 {
-    t_stack *tmp1;
-    t_stack *tmp2;
+	t_stack	*temp;
 
-    if ((*head) && (*head)->    next)
-    {
-        tmp1 = new ((*head)->n);
-        pop(head);
-        tmp2 = new ((*head)->n);
-        pop(head);
-        push(head, tmp1);
-        push(head, tmp2);
-    }
+	temp = stack;
+	while (temp)
+	{
+		if (temp->n == node->n)
+			return (1);
+		temp = temp->next;
+	}
+	return (0);
+}
+void	clear(t_stack **head)
+{
+	t_stack	*curr;
+	t_stack	*temp;
+
+	curr = *head;
+	while (curr)
+	{
+		temp = curr;
+		curr = curr->next;
+		free(temp);
+	}
+}
+void	swap_stack(t_stack **head)
+{
+	t_stack	*tmp1;
+	t_stack	*tmp2;
+
+	if ((*head) && (*head)->next)
+	{
+		tmp1 = new ((*head)->n);
+		pop(head);
+		tmp2 = new ((*head)->n);
+		pop(head);
+		push(head, tmp1);
+		push(head, tmp2);
+	}
 }
 // void swap_stack_ab(t_stack **a, t_stack **b)
 // {
@@ -176,261 +143,307 @@ void swap_stack(t_stack **head)
 //         push(a, tmp2);
 //     }
 // }
-void push_b_to_a(t_stack **a, t_stack **b)
+void	push_b_to_a(t_stack **a, t_stack **b)
 {
-    t_stack *temp;
-    if (!a || !b)
-    {
-        printf("Error\n");
-        exit(1);
-    }
-    if (*b)
-    {
-        temp = duplicate(*b);
-        pop(b);
-        push(a, temp);
-    }
+	t_stack	*temp;
+
+	if (!a || !b)
+	{
+		printf("Error\n");
+		exit(1);
+	}
+	if (*b)
+	{
+		temp = duplicate(*b);
+		pop(b);
+		push(a, temp);
+	}
+	if (a)
+		give_index(*a);
+	if (b)
+		give_index(*b);
+
 }
-void push_a_to_b(t_stack **a, t_stack **b)
+void	push_a_to_b(t_stack **a, t_stack **b)
 {
-    t_stack *temp;
-    if (!a || !b)
-    {
-        printf("Error\n");
-        exit(1);
-    }
-    if (*a)
-    {
-        temp = duplicate(*a);
-        pop(a);
-        push(b, temp);
-    }
+	t_stack	*temp;
+
+	if (!a || !b)
+	{
+		printf("Error\n");
+		exit(1);
+	}
+	if (*a)
+	{
+		temp = duplicate(*a);
+		pop(a);
+		push(b, temp);
+	}
+	if (a)
+		give_index(*a);
+	if (b)
+		give_index(*b);
 }
-void rotate_stack(t_stack **stack)
+void	rotate_stack(t_stack **stack)
 {
-    t_stack *last_a;
-    t_stack *new_head;
+	t_stack	*last_a;
+	t_stack	*new_head;
 
-    if (!stack || !*stack)
-        return;
-    new_head = (*stack)->next;
-    last_a = last(*stack);
-    if (last_a)
-        last_a->next = *stack;
-    (*stack)->next = NULL;
-    (*stack) = new_head;
+	if (!stack || !*stack || !(*stack)->next)
+		return ;
+	new_head = (*stack)->next;
+	last_a = last(*stack);
+	if (last_a)
+		last_a->next = *stack;
+	(*stack)->next = NULL;
+	(*stack) = new_head;
+	give_index(*stack);
 }
-void rotate_ab(t_stack **a, t_stack **b)
+void	rotate_ab(t_stack **a, t_stack **b)
 {
-    t_stack *last_a;
-    t_stack *last_b;
-    t_stack *new_head_a;
-    t_stack *new_head_b;
+	t_stack	*last_a;
+	t_stack	*last_b;
+	t_stack	*new_head_a;
+	t_stack	*new_head_b;
 
-    if (!a || !*a)
-        return;
-    if (!b || !*b)
-        return;
-    new_head_a = (*a)->next;
-    new_head_b = (*b)->next;
-    last_a = last(*a);
-    last_b = last(*b);
-    if (last_a)
-        last_a->next = *a;
-    if (last_b)
-        last_b->next = *b;
-    (*a)->next = NULL;
-    (*b)->next = NULL;
-    (*a) = new_head_a;
-    (*b) = new_head_b;
+	if (!a || !*a)
+		return ;
+	if (!b || !*b)
+		return ;
+	new_head_a = (*a)->next;
+	new_head_b = (*b)->next;
+	last_a = last(*a);
+	last_b = last(*b);
+	if (last_a)
+		last_a->next = *a;
+	if (last_b)
+		last_b->next = *b;
+	(*a)->next = NULL;
+	(*b)->next = NULL;
+	(*a) = new_head_a;
+	(*b) = new_head_b;
 }
-void reverse_rotate_stack(t_stack **stack)
+void	reverse_rotate_stack(t_stack **stack)
 {
-    t_stack *before_last_node;
-    t_stack *last_node;
-    if (!stack || !(*stack) || !(*stack)->next)
-        return;
-    before_last_node = before_last(*stack);
-    last_node = before_last_node->next;
+	t_stack	*before_last_node;
+	t_stack	*last_node;
 
-    last_node->next = *stack;
-    before_last_node->next = NULL;
-    *stack = last_node;
+	if (!stack || !(*stack) || !(*stack)->next)
+		return ;
+	before_last_node = before_last(*stack);
+	last_node = before_last_node->next;
+	last_node->next = *stack;
+	before_last_node->next = NULL;
+	*stack = last_node;
+	give_index(*stack);
 }
-void reverse_rotate_ab(t_stack **a, t_stack **b)
+void	reverse_rotate_ab(t_stack **a, t_stack **b)
 {
-    t_stack *before_last_node_a;
-    t_stack *before_last_node_b;
-    t_stack *last_node_a;
-    t_stack *last_node_b;
-    if (!a || !(*a) || !(*a)->next)
-        return;
-    if (!b || !(*b) || !(*b)->next)
-        return;
-    before_last_node_a = before_last(*a);
-    before_last_node_b = before_last(*b);
-    last_node_a = before_last_node_a->next;
-    last_node_b = before_last_node_b->next;
+	t_stack	*before_last_node_a;
+	t_stack	*before_last_node_b;
+	t_stack	*last_node_a;
+	t_stack	*last_node_b;
 
-    last_node_a->next = *a;
-    last_node_b->next = *b;
-    before_last_node_a->next = NULL;
-    before_last_node_b->next = NULL;
-    *a = last_node_a;
-    *b = last_node_b;
+	if (!a || !(*a) || !(*a)->next)
+		return ;
+	if (!b || !(*b) || !(*b)->next)
+		return ;
+	before_last_node_a = before_last(*a);
+	before_last_node_b = before_last(*b);
+	last_node_a = before_last_node_a->next;
+	last_node_b = before_last_node_b->next;
+	last_node_a->next = *a;
+	last_node_b->next = *b;
+	before_last_node_a->next = NULL;
+	before_last_node_b->next = NULL;
+	*a = last_node_a;
+	*b = last_node_b;
 }
-int is_empty(char   *s)
+int	*make_arr(t_stack *head, int *arr_size)
 {
-    int i;
+	int	*arr;
+	int	i;
 
-    i = 0;
-    while (s[i])
-    {
-        if (s[i] != ' ')
-            return 0;
-        i++;
-    }
-    return 1;
+	*arr_size = size(head);
+	arr = malloc((*arr_size + 1) * sizeof(int));
+	i = 0;
+	while (head && i < *arr_size)
+	{
+		arr[i++] = head->n;
+		head = head->next;
+	}
+	i = 0;
+	return (arr);
 }
-int *make_arr(t_stack *head, int *arr_size)
+void	sort_arr(int *arr, int arr_size)
 {
-    int *arr;
-    int i;
+	int	i;
+	int	j;
+	int	temp;
 
-    *arr_size = size(head);
-    arr = malloc((*arr_size + 1) * sizeof(int));
-    i = 0;
-    while (head && i < *arr_size)
-    {
-        arr[i++] = head->n;
-        head = head->next;
-    }
-    i = 0;
-    return arr;
+	i = 0;
+	while (i < arr_size)
+	{
+		j = 0;
+		while (j < arr_size - 1)
+		{
+			if (arr[j] > arr[j + 1])
+			{
+				temp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
 }
-void sort_arr(int   *arr, int arr_size)
+t_stack	*parse(int ac, char *av[])
 {
-    int i;
-    int j;
-    int temp;
+	t_stack	*a;
+	t_stack	*node;
+	char	**split_arr;
+	int		i;
+	int		j;
 
-    i = 0;
-    while (i < arr_size)
-    {
-        j = 0;
-        while (j < arr_size - 1)
-        {
-            if (arr[j] < arr[j + 1])
-            {
-                temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-            j++;
-        }
-        i++;
-    }
+	i = 1;
+	a = NULL;
+	while (i < ac)
+	{
+		j = 0;
+		// check_format(av[i]);
+		split_arr = ft_split(av[i], ' ');
+		if (split_arr == NULL)
+			print_exit("Error\n");
+		while (split_arr && split_arr[j])
+		{
+			if (is_empty(split_arr[j]))
+				print_exit("Error (empty)\n");
+			if (!valid(split_arr[j]))
+				print_exit("Error (not valid)\n");
+			else
+			{
+				node = new (ft_atoi(split_arr[j]));
+				if (!node || exists(a, node))
+					print_exit("Error");
+				push(&a, node);
+			}
+			j++;
+		}
+		i++;
+		free_all(split_arr, j);
+	}
+	return (a);
 }
-t_stack *parse(int ac, char *av[])
+void	give_index(t_stack *head)
 {
-    t_stack *a;
-    t_stack *node;
-    char **split_arr;
-    int i;
-    int j;
+	t_stack	*curr;
+	int		i;
 
-    i = 1;
-    a = NULL;
-    while (i < ac)
-    {
-        j = 0;
-        // check_format(av[i]);
-        split_arr = ft_split(av[i], ' ');
-        if (split_arr == NULL)
-            print_exit("Error\n");
-        while (split_arr && split_arr[j])
-        {
-            if (is_empty(split_arr[j]))
-                print_exit("Error (empty)\n");
-            if (!valid(split_arr[j]))
-                print_exit("Error (not valid)\n");
-            else
-            {
-                node = new (ft_atoi(split_arr[j]));
-                if (!node || exists(a, node))
-                    print_exit("Error");
-                push(&a, node);
-            }
-            j++;
-        }
-        i++;
-        free_all(split_arr, j);
-    }
-    
-    return a;
+	if (!head)
+		return ;
+	curr = head;
+	i = 0;
+	while (curr)
+	{
+		curr->i = i++;
+		curr = curr->next;
+	}
 }
-int main(int ac, char *av[])
+int	main(int ac, char *av[])
 {
-    t_stack *a;
-    t_stack *b;
-    t_stack *temp;
-    t_stack *next;
-    int *nums_arr;
-    int i;
-    int n;
-    int mid;
-    int div;
-    int start;
-    int end;
-    int offset;
-    int arr_size;
+	t_stack	*a;
+	t_stack	*b;
+	t_stack	*temp;
+	t_stack	*curr;
+	int		*array;
+	int		i;
+	int		mid;
+	int		div;
+	int		start;
+	int		end;
+	int		offset;
+	int		arr_size;
+	int		count;
 
-    i = 1;
-    a = NULL;
-    b = NULL;
-    a = parse(ac, av);
-    print_stack(a);
-    nums_arr = make_arr(a, &arr_size);
-    i = 0;
-    sort_arr(nums_arr, arr_size);
-    while (i < arr_size)
-        printf(" %d  ", nums_arr[i++]);
-    mid = arr_size / 2;
-    div =  nums_arr[mid];
-    offset =  arr_size / div;
-    start =  mid + offset;
-    end =  mid - offset;
-    temp = a;
-    int l = size(a);
-    int d = size(a);
-    while (l--)
-    {
-        temp = a;
-        d = size(a);
-        while (d--)
-        {
-            next = temp->next;
-            n = a->n;
-            if  (a->n >= nums_arr[start] && a->n <= nums_arr[end])
-            {
-                push_a_to_b(&a, &b);
-                if (n < nums_arr[mid])
-                    rotate_stack(&b);
-            }
-            else
-                rotate_stack(&a);
-        }
-        printf("fffff\n");
-
-        start = start + offset;
-        end = end - offset;
-        if (start >= arr_size)
-            start = arr_size - 1;
-        if (end <= 0)
-            end = 0;
-    }
-
-    print_stack(b);
+	i = 1;
+	a = NULL;
+	b = NULL;
+	a = parse(ac, av);
+	give_index(a);
+	array = make_arr(a, &arr_size);
+	i = 0;
+	sort_arr(array, arr_size);
+	mid = arr_size / 2 - 1;
+	div = array[mid];
+	offset = arr_size / mid;
+	start = mid - offset;
+	end = mid + offset;
+	printf("start  -> %d\n", start);
+	printf("end  -> %d\n", end);
+	printf("mid  -> %d\n", mid);
+	printf("range [%d, %d]\n", array[start], array[end]);
+	printf("arr_size  -> %d\n", arr_size);
+	printf("div  -> %d\n", div);
+	printf("offset  -> %d\n", offset);
+	while (a)
+	{
+		curr = a;
+		while (a)
+		{
+			printf("checking -> %d\n", a->n);
+			if (a->n >= array[start] && a->n <= array[end])
+			{
+				printf("in range [%d, %d] -> %d\n", array[start] , array[end], a->n);
+				printf("1\n");
+				printf("a -> %d  b -> %d\n", a->n, b->n);
+				push_a_to_b(&a, &b);
+				if (b->n < array[mid])
+					rotate_stack(&b);
+			}
+			else
+			{
+				temp = a;
+				count = 0;
+				while (temp)
+				{
+					if (temp->n >= array[start] && temp->n <= array[end])
+					{
+						printf("found it [in range]-> %d\n", temp->n);
+						// if (temp->i < mid)
+						// {
+						while (count-- > 0)
+							rotate_stack(&a);
+						push_a_to_b(&a, &b);
+						print_stack(b);
+						if (b->n < array[mid])
+							rotate_stack(&b);
+						break ;
+						// }
+					}
+					temp = temp->next;
+					count++;
+				}
+			}
+			if (a)
+				a = a->next;
+			else
+			{
+				printf("break\n");
+				break;
+			}
+		}
+		printf("end -> %d\n", end);
+		printf("start -> %d\n", start);
+		a = curr;
+		end = end + offset;
+		start = start - offset;
+		if (end >= arr_size)
+			end = arr_size - 1;
+		if (start <= 0)
+			start = 0;
+	}
+	print_stack(b);
 }
 
-// find the smallest 
+// find the smallest

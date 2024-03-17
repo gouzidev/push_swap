@@ -1,12 +1,12 @@
 #include "push_swap.h"
 
-char *ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char *sub;
-	size_t i;
-	size_t j;
-	size_t output_len;
-	size_t str_len;
+	char	*sub;
+	size_t	i;
+	size_t	j;
+	size_t	output_len;
+	size_t	str_len;
 
 	if (!s)
 		return (NULL);
@@ -37,7 +37,7 @@ char **free_all(char **res, int w)
 	return (NULL);
 }
 
-int count_words(char const *s1, char c)
+int	count_words(char const *s1, char c)
 {
 	int count;
 
@@ -61,7 +61,7 @@ int count_words(char const *s1, char c)
 	return (count);
 }
 
-char **handle_null_malloc(char const *s, char c)
+char	**handle_null_malloc(char const *s, char c)
 {
 	char **res;
 
@@ -71,22 +71,22 @@ char **handle_null_malloc(char const *s, char c)
 	return (res);
 }
 
-int is_num(char c)
+int	is_num(char c)
 {
 	return (c <= '9' && c >= '0');
 }
-int is_sign(char c)
+int	is_sign(char c)
 {
 	return (c == '+' || c == '-');
 }
-int is_space(char c)
+int	is_space(char c)
 {
 	return (c == ' ');
 }
-void check_format(char *s)
+void	check_format(char *s)
 {
-	int i;
-	int found_num;
+	int	i;
+	int	found_num;
 
 	i = 0;
 	found_num = 0;
@@ -97,15 +97,15 @@ void check_format(char *s)
 	{
 		if (is_num(s[i]))
 			i++;
-		else if (is_space (s[i]) && is_num(s[i + 1]))
-			i+=2;
-		else if (is_space (s[i]) && is_sign(s[i + 1]) && is_num(s[i + 2]))
-			i+=3;
+		else if (is_space(s[i]) && is_num(s[i + 1]))
+			i += 2;
+		else if (is_space(s[i]) && is_sign(s[i + 1]) && is_num(s[i + 2]))
+			i += 3;
 		else
 			print_exit("Error");
 	}
 }
-char **ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c)
 {
 	int w;
 	char **res;
