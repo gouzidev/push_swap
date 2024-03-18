@@ -41,6 +41,13 @@ void	push(t_stack **head, t_stack *new)
         return;
 	new->next = *head;
 	*head = new;
+    give_index(*head);
+}
+void ft_free(void *ptr)
+{
+	if (ptr != NULL)
+		free(ptr);
+	ptr = NULL;
 }
 void	pop(t_stack **head)
 {
@@ -50,7 +57,7 @@ void	pop(t_stack **head)
 		return ;
 	temp = *head;
 	*head = (*head)->next;
-	free(temp);
+	ft_free(temp);
 }
 t_stack	*duplicate(t_stack *node)
 {
@@ -69,7 +76,6 @@ t_stack	*before_last(t_stack *head)
 		head = head->next;
 	return (head);
 }
-
 t_stack	*last(t_stack *head)
 {
 	while (head && head->next)
@@ -111,7 +117,7 @@ void	clear(t_stack **head)
 	{
 		temp = curr;
 		curr = curr->next;
-		free(temp);
+		ft_free(temp);
 	}
 }
 void	swap_stack(t_stack **head)
@@ -158,9 +164,9 @@ void	push_b_to_a(t_stack **a, t_stack **b)
 		pop(b);
 		push(a, temp);
 	}
-	if (a)
+	if (*a)
 		give_index(*a);
-	if (b)
+	if (*b)
 		give_index(*b);
 
 }
@@ -179,9 +185,9 @@ void	push_a_to_b(t_stack **a, t_stack **b)
 		pop(a);
 		push(b, temp);
 	}
-	if (a)
+	if (*a)
 		give_index(*a);
-	if (b)
+	if (*b)
 		give_index(*b);
 }
 void	rotate_stack(t_stack **stack)
@@ -335,6 +341,31 @@ t_stack	*parse(int ac, char *av[])
 	}
 	return (a);
 }
+
+void print_info(int start, int end, int mid, int *arr, int arr_size, int div, int offset)
+{
+    printf("start  -> %d\n", start);
+	printf("end  -> %d\n", end);
+	printf("mid  -> %d\n", mid);
+	printf("offset  -> %d\n", offset);
+	printf("div  -> %d\n", div);
+	printf("arr_size  -> %d\n", arr_size);
+	printf("range [%d, %d]\n", arr[start], arr[end]);
+}
+void check_offset(int *start, int *end, int offset, int arr_size)
+{
+    if (*end >= arr_size)
+        *end = arr_size - 1;
+    if (*start <= 0)
+        *start = 0;
+}
+void update_offset(int *start, int *end, int offset, int arr_size)
+{
+	*end = *end + offset;
+    *start = *start - offset;
+	check_offset(start, end, offset, arr_size);
+}
+
 void	give_index(t_stack *head)
 {
 	t_stack	*curr;
@@ -355,8 +386,8 @@ int	main(int ac, char *av[])
 	t_stack	*a;
 	t_stack	*b;
 	t_stack	*temp;
-	t_stack	*curr;
-	int		*array;
+	t_stack	*head;
+	int		*arr;
 	int		i;
 	int		mid;
 	int		div;
@@ -371,79 +402,50 @@ int	main(int ac, char *av[])
 	b = NULL;
 	a = parse(ac, av);
 	give_index(a);
-	array = make_arr(a, &arr_size);
+	arr = make_arr(a, &arr_size);
 	i = 0;
-	sort_arr(array, arr_size);
-	mid = arr_size / 2 - 1;
-	div = array[mid];
+	sort_arr(arr, arr_size);
+	mid = arr_size / 2;
+    end = 7;
+    start = 3;
+	div = arr[mid];
 	offset = arr_size / mid;
-	start = mid - offset;
-	end = mid + offset;
-	printf("start  -> %d\n", start);
-	printf("end  -> %d\n", end);
-	printf("mid  -> %d\n", mid);
-	printf("range [%d, %d]\n", array[start], array[end]);
-	printf("arr_size  -> %d\n", arr_size);
-	printf("div  -> %d\n", div);
-	printf("offset  -> %d\n", offset);
+    // print_info(start, end, mid, arr, arr_size, div, offset);
+    int a_size = size(a);
+    int index = 0;
+	head = a;
 	while (a)
 	{
-		curr = a;
-		while (a)
+		if (a->n >= arr[start] && a->n <= arr[end])
 		{
-			printf("checking -> %d\n", a->n);
-			if (a->n >= array[start] && a->n <= array[end])
-			{
-				printf("in range [%d, %d] -> %d\n", array[start] , array[end], a->n);
-				printf("1\n");
-				printf("a -> %d  b -> %d\n", a->n, b->n);
-				push_a_to_b(&a, &b);
-				if (b->n < array[mid])
-					rotate_stack(&b);
-			}
-			else
-			{
-				temp = a;
-				count = 0;
-				while (temp)
-				{
-					if (temp->n >= array[start] && temp->n <= array[end])
-					{
-						printf("found it [in range]-> %d\n", temp->n);
-						// if (temp->i < mid)
-						// {
-						while (count-- > 0)
-							rotate_stack(&a);
-						push_a_to_b(&a, &b);
-						print_stack(b);
-						if (b->n < array[mid])
-							rotate_stack(&b);
-						break ;
-						// }
-					}
-					temp = temp->next;
-					count++;
-				}
-			}
-			if (a)
-				a = a->next;
-			else
-			{
-				printf("break\n");
-				break;
-			}
+			push_a_to_b(&a, &b);
+			if (b->n <= arr[mid])
+				rotate_stack(&b);
 		}
-		printf("end -> %d\n", end);
-		printf("start -> %d\n", start);
-		a = curr;
-		end = end + offset;
-		start = start - offset;
-		if (end >= arr_size)
-			end = arr_size - 1;
-		if (start <= 0)
-			start = 0;
+		else
+		{
+			index = 0;
+			temp = a;
+			while (temp)
+			{	
+				if (temp->n >= arr[start] && temp->n <= arr[end])
+				{
+					while (index-- > 0)
+						rotate_stack(&a);
+					push_a_to_b(&a, &b);
+					break;
+				}
+				temp = temp->next;
+				index++;
+			}
+
+			update_offset(&start, &end, offset, arr_size);
+			print_info(start, end, mid, arr, arr_size, div, offset);
+		}
+		if (a)
+			a = a->next;
+		else
+			break;
 	}
 	print_stack(b);
 }
-
-// find the smallest

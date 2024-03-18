@@ -7,7 +7,7 @@ SRCS = main.c split.c helper.c verify.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(OBJS)
-	$(CC)  $^ -o $(NAME)
+	$(CC)  $^ -o $(NAME) $(LEAK)
 	rm -rf $(OBJS)
 
 %o:%c
