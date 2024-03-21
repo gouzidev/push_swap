@@ -341,16 +341,10 @@ t_stack	*parse(int ac, char *av[])
 	}
 	return (a);
 }
-
 void print_info(int start, int end, int mid, int *arr, int arr_size, int div, int offset)
 {
     printf("start  -> %d\n", start);
 	printf("end  -> %d\n", end);
-	printf("mid  -> %d\n", mid);
-	printf("offset  -> %d\n", offset);
-	printf("div  -> %d\n", div);
-	printf("arr_size  -> %d\n", arr_size);
-	printf("range [%d, %d]\n", arr[start], arr[end]);
 }
 void check_offset(int *start, int *end, int offset, int arr_size)
 {
@@ -365,7 +359,6 @@ void update_offset(int *start, int *end, int offset, int arr_size)
     *start = *start - offset;
 	check_offset(start, end, offset, arr_size);
 }
-
 void	give_index(t_stack *head)
 {
 	t_stack	*curr;
@@ -406,14 +399,17 @@ int	main(int ac, char *av[])
 	i = 0;
 	sort_arr(arr, arr_size);
 	mid = arr_size / 2;
-    end = 7;
-    start = 3;
 	div = arr[mid];
 	offset = arr_size / mid;
+	offset = arr_size / div;
+    end = mid + offset;
+    start = mid - offset;
+
     // print_info(start, end, mid, arr, arr_size, div, offset);
     int a_size = size(a);
     int index = 0;
 	head = a;
+	int flag;
 	while (a)
 	{
 		if (a->n >= arr[start] && a->n <= arr[end])
@@ -424,28 +420,40 @@ int	main(int ac, char *av[])
 		}
 		else
 		{
+			printf("checking -> %d\n", a->n);
+			flag = 0;
 			index = 0;
 			temp = a;
 			while (temp)
-			{	
+			{
 				if (temp->n >= arr[start] && temp->n <= arr[end])
 				{
 					while (index-- > 0)
 						rotate_stack(&a);
 					push_a_to_b(&a, &b);
+					flag = 1;
 					break;
 				}
 				temp = temp->next;
 				index++;
 			}
-
-			update_offset(&start, &end, offset, arr_size);
-			print_info(start, end, mid, arr, arr_size, div, offset);
+			if (flag == 0)
+			{
+				update_offset(&start, &end, offset, arr_size);
+				print_info(start, end, mid, arr, arr_size, div, offset);
+			}
 		}
-		if (a)
-			a = a->next;
-		else
-			break;
+		if (flag == 0)
+		{
+			if (a)
+				a = a->next;
+			else
+			{
+				printf("head -> %d\n", head->n);
+				break;
+			}
+		}
 	}
 	print_stack(b);
+	print_stack(a);
 }
