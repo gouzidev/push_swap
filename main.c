@@ -345,6 +345,9 @@ void print_info(int start, int end, int mid, int *arr, int arr_size, int div, in
 {
     printf("start  -> %d\n", start);
 	printf("end  -> %d\n", end);
+	printf("mid  -> %d\n", mid);
+	printf("div  -> %d\n", div);
+	printf("offset  -> %d\n", offset);
 }
 void check_offset(int *start, int *end, int offset, int arr_size)
 {
@@ -358,6 +361,7 @@ void update_offset(int *start, int *end, int offset, int arr_size)
 	*end = *end + offset;
     *start = *start - offset;
 	check_offset(start, end, offset, arr_size);
+
 }
 void	give_index(t_stack *head)
 {
@@ -374,12 +378,13 @@ void	give_index(t_stack *head)
 		curr = curr->next;
 	}
 }
-int	main(int ac, char *av[])
+
+void push_to_b(t_stack	**stack_a, t_stack **stack_b)
 {
-	t_stack	*a;
-	t_stack	*b;
 	t_stack	*temp;
 	t_stack	*head;
+	t_stack	*a;
+	t_stack	*b;
 	int		*arr;
 	int		i;
 	int		mid;
@@ -390,22 +395,18 @@ int	main(int ac, char *av[])
 	int		arr_size;
 	int		count;
 
+	a = *stack_a;
+	b = *stack_b;
 	i = 1;
-	a = NULL;
-	b = NULL;
-	a = parse(ac, av);
 	give_index(a);
 	arr = make_arr(a, &arr_size);
 	i = 0;
 	sort_arr(arr, arr_size);
-	mid = arr_size / 2;
+	mid = arr_size / 2 - 1;
 	div = arr[mid];
-	offset = arr_size / mid;
-	offset = arr_size / div;
+	offset = 2;
     end = mid + offset;
     start = mid - offset;
-
-    // print_info(start, end, mid, arr, arr_size, div, offset);
     int a_size = size(a);
     int index = 0;
 	head = a;
@@ -415,12 +416,11 @@ int	main(int ac, char *av[])
 		if (a->n >= arr[start] && a->n <= arr[end])
 		{
 			push_a_to_b(&a, &b);
-			if (b->n <= arr[mid])
+			if (b->n >= arr[mid])
 				rotate_stack(&b);
 		}
 		else
 		{
-			printf("checking -> %d\n", a->n);
 			flag = 0;
 			index = 0;
 			temp = a;
@@ -443,17 +443,123 @@ int	main(int ac, char *av[])
 				print_info(start, end, mid, arr, arr_size, div, offset);
 			}
 		}
-		if (flag == 0)
-		{
-			if (a)
-				a = a->next;
-			else
-			{
-				printf("head -> %d\n", head->n);
-				break;
-			}
-		}
+		
 	}
 	print_stack(b);
 	print_stack(a);
+}
+typedef struct s_data {
+	int start;
+	int end;
+	int mid;
+	int offset;
+	int div;
+	int arr_size;
+	int	*arr;
+} t_data;
+
+void set_up(t_stack **stack_a, t_data *data)
+{
+	give_index(*stack_a);
+	data->arr = make_arr(*stack_a, &data->arr_size);
+	printf("arr_size -> %d\n", data->arr_size);
+	
+	sort_arr(data->arr, data->arr_size);
+	data->mid = data->arr_size / 2 - 1;
+	data->div = data->arr[data->mid];
+	data->offset = 2;
+    data->end = data->mid + data->offset;
+    data->start = data->mid - data->offset;
+	check_offset(&data->start, &data->end, data->offset, data->arr_size);
+}
+
+void push_B(t_stack **stack_a, t_stack **stack_b, t_data *data)
+{
+	t_stack	*temp;
+    int index;
+	int flag;
+
+	while (*stack_a)
+	{
+		if ((*stack_a)->n >= data->arr[data->start] && (*stack_a)->n <= data->arr[data->end])
+		{
+			push_a_to_b(stack_a, stack_b);
+			if ((*stack_b)->n >= data->arr[data->mid])
+				rotate_stack(stack_b);
+		}
+		else
+		{
+			flag = 0;
+			index = 0;
+			temp = *stack_a;
+			while (temp)
+			{
+				if (temp->n >= data->arr[data->start] && temp->n <= data->arr[data->end])
+				{
+					while (index-- > 0)
+						rotate_stack(stack_a);
+					push_a_to_b(stack_a, stack_b);
+					flag = 1;
+					break;
+				}
+				temp = temp->next;
+				index++;
+			}
+			if (flag == 0)
+				update_offset(&data->start, &data->end, data->offset, data->arr_size);
+		}
+		
+	}
+	return ;
+}
+
+// void push_A()
+// {
+
+// }
+t_stack	*find_max(t_stack *stack, int index)
+{
+	t_stack	*max_node;
+
+	max_node = stack;
+	while (stack)
+	{
+		if (stack->n > max_node->n)
+			max_node->n = stack->n;
+		stack = stack->next;
+	}
+	return max_node;
+}
+int	main(int ac, char *av[])
+{
+	t_stack *a;
+	t_stack *b;
+	t_data data;
+	t_stack *max_node;
+	
+	int		i;
+	i = 0;
+	b = NULL;
+	a = parse(ac, av);
+	set_up(&a, &data);	
+	push_B(&a, &b, &data);
+	print_stack(b);
+	print_stack(a);
+	max_node = find_max(b, &i);
+	if (i > data.mid)
+	{
+		while (b != max_node)
+			reverse_rotate_stack(&b);
+		push_b_to_a(&a, &b);
+	}
+	else
+	{
+		while (b != max_node)
+			rotate_stack(&b);
+		push_b_to_a(&a, &b);
+	}
+	print_stack(a);
+	print_stack(b);
+
+
 }
