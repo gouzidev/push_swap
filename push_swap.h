@@ -14,6 +14,16 @@ typedef struct s_stack {
     int i;
 }   t_stack;
 
+typedef struct s_data {
+	int start;
+	int end;
+	int mid;
+	int offset;
+	int div;
+	int arr_size;
+	int	*arr;
+} t_data;
+
 /* main.c */
 int ft_atoi(const char *str);
 t_stack *new(int n);
@@ -28,14 +38,16 @@ void clear(t_stack **head);
 void swap_stack(t_stack **head);
 void push_b_to_a(t_stack **a, t_stack **b);
 void push_a_to_b(t_stack **a, t_stack **b);
-void rotate_stack(t_stack **stack);
+void rotate_stack(t_stack **stack, char *msg);
 void rotate_ab(t_stack **a, t_stack **b);
-void reverse_rotate_stack(t_stack **stack);
+void reverse_rotate_stack(t_stack **stack, char *msg);
 void reverse_rotate_ab(t_stack **a, t_stack **b);
 int *make_arr(t_stack *head, int *arr_size);
 void sort_arr(int   *arr, int arr_size);
 t_stack *parse(int ac, char *av[]);
-void give_index(t_stack *head);
+void sort_two(t_stack **head);
+t_stack	*find_max(t_stack *stack);
+
 
 /* split.c */
 char	*ft_substr(char const *s, unsigned int start, size_t len);
@@ -50,6 +62,11 @@ void print_exit(char *msg);
 void print_array(int  *array, int arr_size);
 void print_stack(t_stack *stack);
 void fill_stack(t_stack **stack);
+
+void update_offset(int *start, int *end, int offset, int arr_size);
+void check_offset(int *start, int *end, int offset, int arr_size);
+void print_info(int start, int end, int mid, int *arr, int arr_size, int div, int offset);
+void give_index(t_stack *head);
 
 int is_empty(char   *s);
 int valid(char *num);

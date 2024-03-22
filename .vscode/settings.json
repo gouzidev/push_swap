@@ -17,6 +17,7 @@
         "unordered_set": "c",
         "vector": "c",
         "algorithm": "c",
-        "random": "c"
+        "random": "c",
+        "limits.h": "c"
     }
 }
