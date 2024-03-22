@@ -1,140 +1,5 @@
 #include "push_swap.h"
 
-int	ft_atoi(const char *str)
-{
-	int		i;
-	int		sign;
-	long	res;
-
-	res = 0;
-	sign = 1;
-	i = 0;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		res = res * 10 + (str[i] - 48);
-		if (res > INT_MAX || (res * sign) < INT_MIN)
-			print_exit("laaaarge number");
-		i++;
-	}
-	return (res * sign);
-}
-t_stack *new (int n)
-{
-	t_stack	*new_node;
-
-	new_node = malloc(sizeof(t_stack));
-	if (new_node == 0)
-		return (0);
-	new_node->next = NULL;
-	new_node->n = n;
-	return (new_node);
-}
-void	push(t_stack **head, t_stack *new)
-{
-    if (!new || !head)
-        return;
-	new->next = *head;
-	*head = new;
-    give_index(*head);
-}
-void ft_free(void *ptr)
-{
-	if (ptr != NULL)
-		free(ptr);
-	ptr = NULL;
-}
-void	pop(t_stack **head)
-{
-	t_stack	*temp;
-
-	if (!*head)
-		return ;
-	temp = *head;
-	*head = (*head)->next;
-	ft_free(temp);
-}
-t_stack	*duplicate(t_stack *node)
-{
-	t_stack	*temp;
-
-	if (!node)
-		return (NULL);
-	temp = new (node->n);
-	if (temp == NULL)
-		return NULL;
-	return (temp);
-}
-t_stack	*before_last(t_stack *head)
-{
-	while (head && head->next && head->next->next)
-		head = head->next;
-	return (head);
-}
-t_stack	*last(t_stack *head)
-{
-	while (head && head->next)
-		head = head->next;
-	return (head);
-}
-int	size(t_stack *stack)
-{
-	int	i;
-
-	i = 0;
-	while (stack)
-	{
-		i++;
-		stack = stack->next;
-	}
-	return (i);
-}
-int	exists(t_stack *stack, t_stack *node)
-{
-	t_stack	*temp;
-
-	temp = stack;
-	while (temp)
-	{
-		if (temp->n == node->n)
-			return (1);
-		temp = temp->next;
-	}
-	return (0);
-}
-void	clear(t_stack **head)
-{
-	t_stack	*curr;
-	t_stack	*temp;
-
-	curr = *head;
-	while (curr)
-	{
-		temp = curr;
-		curr = curr->next;
-		ft_free(temp);
-	}
-}
-void	swap_stack(t_stack **head)
-{
-	t_stack	*tmp1;
-	t_stack	*tmp2;
-
-	if ((*head) && (*head)->next)
-	{
-		tmp1 = new ((*head)->n);
-		pop(head);
-		tmp2 = new ((*head)->n);
-		pop(head);
-		push(head, tmp1);
-		push(head, tmp2);
-	}
-}
 // void swap_stack_ab(t_stack **a, t_stack **b)
 // {
 //     t_stack *tmp1;
@@ -149,124 +14,7 @@ void	swap_stack(t_stack **head)
 //         push(a, tmp2);
 //     }
 // }
-void	push_b_to_a(t_stack **a, t_stack **b)
-{
-	t_stack	*temp;
 
-	if (!a || !b)
-	{
-		printf("Error\n");
-		exit(1);
-	}
-	if (*b)
-	{
-		temp = duplicate(*b);
-		pop(b);
-		push(a, temp);
-	}
-	if (*a)
-		give_index(*a);
-	if (*b)
-		give_index(*b);
-
-}
-void	push_a_to_b(t_stack **a, t_stack **b)
-{
-	t_stack	*temp;
-
-	if (!a || !b)
-	{
-		printf("Error\n");
-		exit(1);
-	}
-	if (*a)
-	{
-		temp = duplicate(*a);
-		pop(a);
-		push(b, temp);
-	}
-	if (*a)
-		give_index(*a);
-	if (*b)
-		give_index(*b);
-}
-void	rotate_stack(t_stack **stack, char *msg)
-{
-	t_stack	*last_a;
-	t_stack	*new_head;
-
-	if (!stack || !*stack || !(*stack)->next)
-		return ;
-	new_head = (*stack)->next;
-	last_a = last(*stack);
-	if (last_a)
-		last_a->next = *stack;
-	(*stack)->next = NULL;
-	(*stack) = new_head;
-	give_index(*stack);
-	printf("%s\n", msg);
-}
-void	rotate_ab(t_stack **a, t_stack **b)
-{
-	t_stack	*last_a;
-	t_stack	*last_b;
-	t_stack	*new_head_a;
-	t_stack	*new_head_b;
-
-	if (!a || !*a)
-		return ;
-	if (!b || !*b)
-		return ;
-	new_head_a = (*a)->next;
-	new_head_b = (*b)->next;
-	last_a = last(*a);
-	last_b = last(*b);
-	if (last_a)
-		last_a->next = *a;
-	if (last_b)
-		last_b->next = *b;
-	(*a)->next = NULL;
-	(*b)->next = NULL;
-	(*a) = new_head_a;
-	(*b) = new_head_b;
-}
-void	reverse_rotate_stack(t_stack **stack, char *msg)
-{
-	t_stack	*before_last_node;
-	t_stack	*last_node;
-
-	if (!stack || !(*stack) || !(*stack)->next)
-		return ;
-	before_last_node = before_last(*stack);
-	last_node = before_last_node->next;
-	last_node->next = *stack;
-	before_last_node->next = NULL;
-	*stack = last_node;
-	give_index(*stack);
-	printf("%s\n", msg);
-}
-void	reverse_rotate_ab(t_stack **a, t_stack **b)
-{
-	t_stack	*before_last_node_a;
-	t_stack	*before_last_node_b;
-	t_stack	*last_node_a;
-	t_stack	*last_node_b;
-
-	if (!a || !(*a) || !(*a)->next)
-		return ;
-	if (!b || !(*b) || !(*b)->next)
-		return ;
-	before_last_node_a = before_last(*a);
-	before_last_node_b = before_last(*b);
-	last_node_a = before_last_node_a->next;
-	last_node_b = before_last_node_b->next;
-	last_node_a->next = *a;
-	last_node_b->next = *b;
-	before_last_node_a->next = NULL;
-	before_last_node_b->next = NULL;
-	*a = last_node_a;
-	*b = last_node_b;
-}
 int	*make_arr(t_stack *head, int *arr_size)
 {
 	int	*arr;
@@ -307,15 +55,36 @@ void	sort_arr(int *arr, int arr_size)
 	}
 }
 
-void sort_two(t_stack **head)
+void sort_two(t_stack **head, char *msg)
 {
-	t_stack	*temp;
 	if ((*head)->n > (*head)->next->n)
-	{
-		swap_stack(head);
-		printf("sa");
-	}
+		swap_stack(head, msg);
 }
+
+void sort_three(t_stack **head)
+{
+	if (!*head || !(*head)->next || !(*head)->next->next)
+		return;
+	if ((*head)->n < (*head)->next->n && (*head)->n > (*head)->next->next->n)
+		reverse_rotate_stack(head, "rra");
+	else if ((*head)->n > (*head)->next->n && (*head)->n < (*head)->next->next->n)
+		swap_stack(head, "sa");
+	else if ((*head)->n < (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
+		reverse_rotate_stack(head, "rra");
+	else if ((*head)->n < (*head)->next->n && (*head)->next->n < (*head)->next->next->n)
+	{
+		swap_stack(head, "sa");
+		rotate_stack(head, "ra");
+	}
+	else if ((*head)->n > (*head)->next->n && (*head)->next->n < (*head)->next->next->n)
+	{
+		swap_stack(head, "sa");
+		reverse_rotate_stack(head, "rra");
+	}
+	else
+		print_exit("Error\n");
+}
+
 t_stack	*find_max(t_stack *stack)
 {
 	t_stack	*max_node;
@@ -427,20 +196,16 @@ void push_to_b(t_stack	**stack_a, t_stack **stack_b)
 			if (flag == 0)
 			{
 				update_offset(&start, &end, offset, arr_size);
-				print_info(start, end, mid, arr, arr_size, div, offset);
 			}
 		}
 		
 	}
 }
 
-
 void set_up(t_stack **stack_a, t_data *data)
 {
 	give_index(*stack_a);
 	data->arr = make_arr(*stack_a, &data->arr_size);
-	printf("arr_size -> %d\n", data->arr_size);
-	
 	sort_arr(data->arr, data->arr_size);
 	data->mid = data->arr_size / 2 - 1;
 	data->div = data->arr[data->mid];
@@ -455,7 +220,7 @@ void push_B(t_stack **stack_a, t_stack **stack_b, t_data *data)
 	t_stack	*temp;
     int index;
 	int flag;
-
+	
 	while (*stack_a)
 	{
 		if ((*stack_a)->n >= data->arr[data->start] && (*stack_a)->n <= data->arr[data->end])
@@ -488,7 +253,7 @@ void push_B(t_stack **stack_a, t_stack **stack_b, t_data *data)
 		
 	}
 	give_index(*stack_b);
-	return ;
+
 }
 
 void push_A(t_stack **stack_a, t_stack **stack_b, t_data *data)
@@ -506,25 +271,28 @@ void push_A(t_stack **stack_a, t_stack **stack_b, t_data *data)
 		{
 			while (b != max_node)
 				reverse_rotate_stack(&b, "rrb");
-			push_b_to_a(&a, &b);
+			push_b_to_a(&a, &b, "pa");
 		}
 		else
 		{
 			while (b != max_node)
 				rotate_stack(&b, "rb");
-			push_b_to_a(&a, &b);
+			push_b_to_a(&a, &b, "pa");
 		}
 	}
+	*stack_b = b;
+	*stack_a = a;
 }
 
 int	is_stack_sorted(t_stack *head)
 {
 	while (head && head->next)
 	{
-		if (head->n > head->next->n)
+		if (head->n < head->next->n)
 			return 0;
 		head = head->next;
-		
+	}
+	return 1;
 }
 
 int	main(int ac, char *av[])
@@ -540,18 +308,25 @@ int	main(int ac, char *av[])
 	a = parse(ac, av);
 	set_up(&a, &data);	
 
+	if (is_stack_sorted(a))
+		return 0;
 	if (size(a) == 2)
-	{
-		printf("sorting two\n");
-		sort_two(&a);
-	}
+		sort_two(&a, "sa");
+	if (size(a) == 3)
+		sort_three(&a);
 	else
 	{
 		push_B(&a, &b, &data);
+		print_stack(b);
+		print_array(data.arr, data.arr_size);
+		print_info(data);
+		printf("done\n");
+		exit(0);
 		push_A(&a, &b, &data);
 	}
-
-
+	printf("a -> \n");
 	print_stack(a);
+	printf("b -> \n");
 	print_stack(b);
+
 }

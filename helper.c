@@ -1,5 +1,37 @@
 #include "push_swap.h"
 
+void ft_free(void *ptr)
+{
+	if (ptr != NULL)
+		free(ptr);
+	ptr = NULL;
+}
+
+int	ft_atoi(const char *str)
+{
+	int		i;
+	int		sign;
+	long	res;
+
+	res = 0;
+	sign = 1;
+	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + (str[i] - 48);
+		if (res > INT_MAX || (res * sign) < INT_MIN)
+			print_exit("laaaarge number");
+		i++;
+	}
+	return (res * sign);
+}
+
 void	print_array(int *array, int arr_size)
 {
 	int	i;
@@ -34,13 +66,13 @@ void	fill_stack(t_stack **stack)
 	push(stack, new (4));
 }
 
-void print_info(int start, int end, int mid, int *arr, int arr_size, int div, int offset)
+void print_info(t_data data)
 {
-    printf("start  -> %d\n", start);
-	printf("end  -> %d\n", end);
-	printf("mid  -> %d\n", mid);
-	printf("div  -> %d\n", div);
-	printf("offset  -> %d\n", offset);
+    printf("start  -> %d\n", data.start);
+	printf("end  -> %d\n", data.end);
+	printf("mid  -> %d\n", data.mid);
+	printf("div  -> %d\n", data.div);
+	printf("offset  -> %d\n", data.offset);
 }
 void check_offset(int *start, int *end, int offset, int arr_size)
 {
