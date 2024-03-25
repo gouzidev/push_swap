@@ -65,24 +65,46 @@ void sort_three(t_stack **head)
 {
 	if (!*head || !(*head)->next || !(*head)->next->next)
 		return;
-	if ((*head)->n < (*head)->next->n && (*head)->n > (*head)->next->next->n)
+	if ((*head)->n > (*head)->next->n && (*head)->n < (*head)->next->next->n)
 		reverse_rotate_stack(head, "rra");
-	else if ((*head)->n > (*head)->next->n && (*head)->n < (*head)->next->next->n)
+	else if ((*head)->n < (*head)->next->n && (*head)->n > (*head)->next->next->n)
 		swap_stack(head, "sa");
-	else if ((*head)->n < (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
+	else if ((*head)->n > (*head)->next->n && (*head)->next->n < (*head)->next->next->n)
 		reverse_rotate_stack(head, "rra");
-	else if ((*head)->n < (*head)->next->n && (*head)->next->n < (*head)->next->next->n)
+	else if ((*head)->n > (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
 	{
 		swap_stack(head, "sa");
 		rotate_stack(head, "ra");
 	}
-	else if ((*head)->n > (*head)->next->n && (*head)->next->n < (*head)->next->next->n)
+	else if ((*head)->n < (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
 	{
 		swap_stack(head, "sa");
 		reverse_rotate_stack(head, "rra");
 	}
 	else
 		print_exit("Error\n");
+}
+
+void sort_four(t_stack **a, t_stack **b)
+{
+	t_stack *min;
+
+	print_stack(*a);
+	min = find_min(*a);
+	if (min->i > 2)
+	{
+		while (*a != min)
+			reverse_rotate_stack(a, "rra");
+	}
+	else
+	{
+		while (*a != min)
+			rotate_stack(a, "ra");
+	}
+	print_stack(*a);
+	push_a_to_b(a, b);
+	sort_three(a);
+	push_b_to_a(a, b, "pb");
 }
 
 t_stack	*find_max(t_stack *stack)
@@ -97,6 +119,20 @@ t_stack	*find_max(t_stack *stack)
 		stack = stack->next;
 	}
 	return max_node;
+}
+
+t_stack	*find_min(t_stack *stack)
+{
+	t_stack	*min_node;
+
+	min_node = stack;
+	while (stack)
+	{
+		if (stack->n < min_node->n)
+			min_node = stack;
+		stack = stack->next;
+	}
+	return min_node;
 }
 t_stack	*parse(int ac, char *av[])
 {
@@ -295,6 +331,8 @@ int	is_stack_sorted(t_stack *head)
 	return 1;
 }
 
+
+
 int	main(int ac, char *av[])
 {
 	t_stack *a;
@@ -310,10 +348,12 @@ int	main(int ac, char *av[])
 
 	if (is_stack_sorted(a))
 		return 0;
-	if (size(a) == 2)
+	else if (size(a) == 2)
 		sort_two(&a, "sa");
-	if (size(a) == 3)
+	else if (size(a) == 3)
 		sort_three(&a);
+	else if (size(a) == 4)
+		sort_four(&a, &b);
 	else
 	{
 		push_B(&a, &b, &data);

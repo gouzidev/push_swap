@@ -40,6 +40,7 @@ void sort_arr(int   *arr, int arr_size);
 t_stack *parse(int ac, char *av[]);
 void sort_two(t_stack **head, char *msg);
 t_stack	*find_max(t_stack *stack);
+t_stack	*find_min(t_stack *stack);
 
 
 /* operations.c */

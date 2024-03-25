@@ -103,20 +103,20 @@ void	rotate_ab(t_stack **a, t_stack **b)
 }
 void	reverse_rotate_stack(t_stack **stack, char *msg)
 {
+	t_stack	*before_last_node;
 	t_stack	*last_node;
-	t_stack *new_head;
-	t_stack	*head;
 
 	if (!stack || !(*stack) || !(*stack)->next)
 		return ;
-	head = *stack;
-	new_head = (*stack)->next;
-	last_node = last(*stack);
-	last_node->next = head;
-	head->next = NULL;
-	*stack = new_head;
+	before_last_node = before_last(*stack);
+	last_node = before_last_node->next;
+	last_node->next = *stack;
+	before_last_node->next = NULL;
+	*stack = last_node;
+
+	if (!stack || !(*stack) || !(*stack)->next)
+		return ;
 	give_index(*stack);
-	printf("%s\n", msg);
 }
 void	reverse_rotate_ab(t_stack **a, t_stack **b)
 {
