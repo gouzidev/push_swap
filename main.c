@@ -61,6 +61,10 @@ void sort_two(t_stack **head, char *msg)
 		swap_stack(head, msg);
 }
 
+// bruh wtf this shit doesnt work // 
+// 6
+// 4
+// 2
 void sort_three(t_stack **head)
 {
 	if (!*head || !(*head)->next || !(*head)->next->next)
@@ -74,12 +78,12 @@ void sort_three(t_stack **head)
 	else if ((*head)->n > (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
 	{
 		swap_stack(head, "sa");
-		rotate_stack(head, "ra");
+		reverse_rotate_stack(head, "rra");
 	}
 	else if ((*head)->n < (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
 	{
 		swap_stack(head, "sa");
-		reverse_rotate_stack(head, "rra");
+		rotate_stack(head, "ra");
 	}
 	else
 		print_exit("Error\n");
@@ -103,10 +107,34 @@ void sort_four(t_stack **a, t_stack **b)
 	}
 	print_stack(*a);
 	push_a_to_b(a, b);
+	printf("before sort three\n");
+	print_stack(*a);
 	sort_three(a);
+	printf("aftere sort three\n");
+	print_stack(*a);
 	push_b_to_a(a, b, "pb");
 }
+void sort_five(t_stack **a, t_stack **b)
+{
+	t_stack *min;
 
+	print_stack(*a);
+	min = find_min(*a);
+	if (min->i > 2)
+	{
+		while (*a != min)
+			reverse_rotate_stack(a, "rra");
+	}
+	else
+	{
+		while (*a != min)
+			rotate_stack(a, "ra");
+	}
+	print_stack(*a);
+	push_a_to_b(a, b);
+	sort_four(a, b);
+	push_b_to_a(a, b, "pb");
+}
 t_stack	*find_max(t_stack *stack)
 {
 	t_stack	*max_node;
@@ -133,42 +161,6 @@ t_stack	*find_min(t_stack *stack)
 		stack = stack->next;
 	}
 	return min_node;
-}
-t_stack	*parse(int ac, char *av[])
-{
-	t_stack	*a;
-	t_stack	*node;
-	char	**split_arr;
-	int		i;
-	int		j;
-
-	i = 1;
-	a = NULL;
-	while (i < ac)
-	{
-		j = 0;
-		split_arr = ft_split(av[i], ' ');
-		if (split_arr == NULL)
-			print_exit("Error\n");
-		while (split_arr && split_arr[j])
-		{
-			if (is_empty(split_arr[j]))
-				print_exit("Error (empty)\n");
-			if (!valid(split_arr[j]))
-				print_exit("Error (not valid)\n");
-			else
-			{
-				node = new (ft_atoi(split_arr[j]));
-				if (!node || exists(a, node))
-					print_exit("Error");
-				push(&a, node);
-			}
-			j++;
-		}
-		i++;
-		free_all(split_arr, j);
-	}
-	return (a);
 }
 
 void push_to_b(t_stack	**stack_a, t_stack **stack_b)
@@ -346,24 +338,26 @@ int	main(int ac, char *av[])
 	a = parse(ac, av);
 	set_up(&a, &data);	
 
-	if (is_stack_sorted(a))
-		return 0;
-	else if (size(a) == 2)
-		sort_two(&a, "sa");
-	else if (size(a) == 3)
-		sort_three(&a);
-	else if (size(a) == 4)
-		sort_four(&a, &b);
-	else
-	{
-		push_B(&a, &b, &data);
-		print_stack(b);
-		print_array(data.arr, data.arr_size);
-		print_info(data);
-		printf("done\n");
-		exit(0);
-		push_A(&a, &b, &data);
-	}
+	// if (is_stack_sorted(a))
+	// 	return 0;
+	// else if (size(a) == 2)
+	// 	sort_two(&a, "sa");
+	// else if (size(a) == 3)
+	// 	sort_three(&a);
+	// else if (size(a) == 4)
+	// 	sort_four(&a, &b);
+	// else if (size(a) == 5)
+	// 	sort_five(&a, &b);
+	// else
+	// {
+	// 	push_B(&a, &b, &data);
+	// 	print_stack(b);
+	// 	print_array(data.arr, data.arr_size);
+	// 	print_info(data);
+	// 	printf("done\n");
+	// 	exit(0);
+	// 	push_A(&a, &b, &data);
+	// }
 	printf("a -> \n");
 	print_stack(a);
 	printf("b -> \n");

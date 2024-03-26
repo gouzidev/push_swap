@@ -29,19 +29,23 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return ((char *)sub);
 }
 
-char **free_all(char **res, int w)
+char **free_all(char **res)
 {
-	while (w-- > 0)
-		free(res[w]);
+	int	w;
+
+	w = 0;
+	while (res[w])
+		free(res[w++]);
 	free(res);
 	return (NULL);
 }
 
-int	count_words(char const *s1, char c)
+int	count_words(char const *s1, char c, int	*len)
 {
 	int count;
 
 	count = 0;
+	*len = 0;
 	while (*s1)
 	{
 		if (*s1 == '\0')
@@ -58,16 +62,17 @@ int	count_words(char const *s1, char c)
 				s1++;
 		}
 	}
+	*len = count;
 	return (count);
 }
 
-char	**handle_null_malloc(char const *s, char c)
+char	**handle_null_malloc(char const *s, char c, int	*len)
 {
 	char **res;
 
 	if (!s)
 		return (NULL);
-	res = ((char **)malloc((count_words(s, c) + 1) * sizeof(char *)));
+	res = ((char **)malloc((count_words(s, c, len) + 1) * sizeof(char *)));
 	return (res);
 }
 
@@ -105,7 +110,7 @@ void	check_format(char *s)
 			print_exit("Error");
 	}
 }
-char	**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c, int	*len)
 {
 	int w;
 	char **res;
@@ -113,7 +118,7 @@ char	**ft_split(char const *s, char c)
 	int j;
 
 	i = 0;
-	res = handle_null_malloc(s, c);
+	res = handle_null_malloc(s, c, len);
 	if (res == NULL)
 		return (NULL);
 	w = 0;
@@ -128,7 +133,7 @@ char	**ft_split(char const *s, char c)
 			i++;
 		res[w++] = ft_substr(s, i - j, j);
 		if (res[w - 1] == NULL)
-			return (free_all(res, w - 1));
+			return (free_all(res));
 	}
 	res[w] = 0;
 	return (res);

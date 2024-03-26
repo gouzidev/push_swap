@@ -42,6 +42,8 @@ void sort_two(t_stack **head, char *msg);
 t_stack	*find_max(t_stack *stack);
 t_stack	*find_min(t_stack *stack);
 
+/* parse.c */
+t_stack	*parse(int ac, char *av[]);
 
 /* operations.c */
 void	swap_stack(t_stack **head, char *msg);
@@ -56,10 +58,10 @@ void	reverse_rotate_ab(t_stack **a, t_stack **b);
 
 /* split.c */
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	**free_all(char **res, int w);
-int	count_words(char const *s1, char c);
-char	**handle_null_malloc(char const *s, char c);
-char	**ft_split(char const *s, char c);
+char	**free_all(char **res);
+int	count_words(char const *s1, char c, int	*len);
+char	**handle_null_malloc(char const *s, char c,  int	*len);
+char	**ft_split(char const *s, char c,  int	*len);
 void check_format(char *s);
 
 /* helper.c */
