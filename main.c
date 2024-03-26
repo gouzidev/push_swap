@@ -69,21 +69,9 @@ void sort_three(t_stack **head)
 {
 	if (!*head || !(*head)->next || !(*head)->next->next)
 		return;
-	if ((*head)->n > (*head)->next->n && (*head)->n < (*head)->next->next->n)
-		reverse_rotate_stack(head, "rra");
-	else if ((*head)->n < (*head)->next->n && (*head)->n > (*head)->next->next->n)
-		swap_stack(head, "sa");
-	else if ((*head)->n > (*head)->next->n && (*head)->next->n < (*head)->next->next->n)
-		reverse_rotate_stack(head, "rra");
-	else if ((*head)->n > (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
+	if ((*head)->n < (*head)->next->n)
 	{
-		swap_stack(head, "sa");
-		reverse_rotate_stack(head, "rra");
-	}
-	else if ((*head)->n < (*head)->next->n && (*head)->next->n > (*head)->next->next->n)
-	{
-		swap_stack(head, "sa");
-		rotate_stack(head, "ra");
+		if ((*head)->next->n < (*head)->next->next->n)
 	}
 	else
 		print_exit("Error\n");
@@ -338,26 +326,26 @@ int	main(int ac, char *av[])
 	a = parse(ac, av);
 	set_up(&a, &data);	
 
-	// if (is_stack_sorted(a))
-	// 	return 0;
-	// else if (size(a) == 2)
-	// 	sort_two(&a, "sa");
-	// else if (size(a) == 3)
-	// 	sort_three(&a);
-	// else if (size(a) == 4)
-	// 	sort_four(&a, &b);
-	// else if (size(a) == 5)
-	// 	sort_five(&a, &b);
-	// else
-	// {
-	// 	push_B(&a, &b, &data);
-	// 	print_stack(b);
-	// 	print_array(data.arr, data.arr_size);
-	// 	print_info(data);
-	// 	printf("done\n");
-	// 	exit(0);
-	// 	push_A(&a, &b, &data);
-	// }
+	if (is_stack_sorted(a))
+		return 0;
+	else if (size(a) == 2)
+		sort_two(&a, "sa");
+	else if (size(a) == 3)
+		sort_three(&a);
+	else if (size(a) == 4)
+		sort_four(&a, &b);
+	else if (size(a) == 5)
+		sort_five(&a, &b);
+	else
+	{
+		push_B(&a, &b, &data);
+		print_stack(b);
+		print_array(data.arr, data.arr_size);
+		print_info(data);
+		printf("done\n");
+		exit(0);
+		push_A(&a, &b, &data);
+	}
 	printf("a -> \n");
 	print_stack(a);
 	printf("b -> \n");
