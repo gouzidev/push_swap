@@ -61,27 +61,45 @@ void sort_two(t_stack **head, char *msg)
 		swap_stack(head, msg);
 }
 
-// bruh wtf this shit doesnt work // 
-// 6
-// 4
-// 2
-void sort_three(t_stack **head)
+void sort_three(t_stack **a, t_stack **b)
 {
-	if (!*head || !(*head)->next || !(*head)->next->next)
-		return;
-	if ((*head)->n < (*head)->next->n)
+	t_stack *min;
+
+	min = find_min(*a);
+	if (min->i == 1)
 	{
-		if ((*head)->next->n < (*head)->next->next->n)
+		if ((*a)->n > (*a)->next->next->n)
+			rotate_stack(a, "ra");
+		else
+			swap_stack(a, "sa");
 	}
-	else
-		print_exit("Error\n");
+	else if (min->i == 2)
+	{
+		if ((*a)->n > (*a)->next->n)
+		{
+			swap_stack(a, "sa");
+			reverse_rotate_stack(a, "rra");
+		}
+		else
+		{
+			swap_stack(a, "sa");
+			rotate_stack(a, "ra");
+		}
+	}
+	else if (min->i == 0)
+	{
+		if ((*a)->next->n > (*a)->next->next->n)
+		{
+			swap_stack(a, "sa");
+			rotate_stack(a, "ra");
+		}
+	}
 }
 
 void sort_four(t_stack **a, t_stack **b)
 {
 	t_stack *min;
 
-	print_stack(*a);
 	min = find_min(*a);
 	if (min->i > 2)
 	{
@@ -93,20 +111,14 @@ void sort_four(t_stack **a, t_stack **b)
 		while (*a != min)
 			rotate_stack(a, "ra");
 	}
-	print_stack(*a);
 	push_a_to_b(a, b);
-	printf("before sort three\n");
-	print_stack(*a);
-	sort_three(a);
-	printf("aftere sort three\n");
-	print_stack(*a);
+	sort_three(a, b);
 	push_b_to_a(a, b, "pb");
 }
 void sort_five(t_stack **a, t_stack **b)
 {
 	t_stack *min;
 
-	print_stack(*a);
 	min = find_min(*a);
 	if (min->i > 2)
 	{
@@ -118,7 +130,6 @@ void sort_five(t_stack **a, t_stack **b)
 		while (*a != min)
 			rotate_stack(a, "ra");
 	}
-	print_stack(*a);
 	push_a_to_b(a, b);
 	sort_four(a, b);
 	push_b_to_a(a, b, "pb");
@@ -242,7 +253,7 @@ void push_B(t_stack **stack_a, t_stack **stack_b, t_data *data)
 		if ((*stack_a)->n >= data->arr[data->start] && (*stack_a)->n <= data->arr[data->end])
 		{
 			push_a_to_b(stack_a, stack_b);
-			if ((*stack_b)->n >= data->arr[data->mid])
+			if ((*stack_b)->n < data->arr[data->mid])
 				rotate_stack(stack_b, "rb");
 		}
 		else
@@ -257,6 +268,8 @@ void push_B(t_stack **stack_a, t_stack **stack_b, t_data *data)
 					while (index-- > 0)
 						rotate_stack(stack_a, "ra");
 					push_a_to_b(stack_a, stack_b);
+					if ((*stack_b)->n < data->arr[data->mid])
+						rotate_stack(stack_b, "rb");
 					flag = 1;
 					break;
 				}
@@ -304,7 +317,7 @@ int	is_stack_sorted(t_stack *head)
 {
 	while (head && head->next)
 	{
-		if (head->n < head->next->n)
+		if (head->n > head->next->n)
 			return 0;
 		head = head->next;
 	}
@@ -331,7 +344,7 @@ int	main(int ac, char *av[])
 	else if (size(a) == 2)
 		sort_two(&a, "sa");
 	else if (size(a) == 3)
-		sort_three(&a);
+		sort_three(&a, &b);
 	else if (size(a) == 4)
 		sort_four(&a, &b);
 	else if (size(a) == 5)
@@ -339,16 +352,7 @@ int	main(int ac, char *av[])
 	else
 	{
 		push_B(&a, &b, &data);
-		print_stack(b);
-		print_array(data.arr, data.arr_size);
-		print_info(data);
-		printf("done\n");
-		exit(0);
+		printf("done ppart 1\n");
 		push_A(&a, &b, &data);
 	}
-	printf("a -> \n");
-	print_stack(a);
-	printf("b -> \n");
-	print_stack(b);
-
 }

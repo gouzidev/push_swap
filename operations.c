@@ -103,8 +103,6 @@ void	rotate_ab(t_stack **a, t_stack **b)
 }
 void	reverse_rotate_stack(t_stack **stack, char *msg)
 {
-	printf("before rra \n");
-	print_stack(*stack);
 	t_stack	*before_last_node;
 	t_stack	*last_node;
 
@@ -119,9 +117,7 @@ void	reverse_rotate_stack(t_stack **stack, char *msg)
 	if (!stack || !(*stack) || !(*stack)->next)
 		return ;
 	give_index(*stack);
-
-	printf("affere rra \n");
-	print_stack(*stack);
+	printf("%s\n", msg);
 }
 void	reverse_rotate_ab(t_stack **a, t_stack **b)
 {
