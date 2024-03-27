@@ -134,14 +134,14 @@ void sort_five(t_stack **a, t_stack **b)
 	sort_four(a, b);
 	push_b_to_a(a, b, "pb");
 }
-t_stack	*find_max(t_stack *stack)
+t_stack	*find_max_usin_arr(t_stack *stack, t_data *data)
 {
 	t_stack	*max_node;
 
-	max_node = stack;
+	max_node = NULL;
 	while (stack)
 	{
-		if (stack->n > max_node->n)
+		if (stack->n == data->arr[data->curr_max_i])
 			max_node = stack;
 		stack = stack->next;
 	}
@@ -239,6 +239,8 @@ void set_up(t_stack **stack_a, t_data *data)
 	data->offset = 2;
     data->end = data->mid + data->offset;
     data->start = data->mid - data->offset;
+	data->orig_max = data->arr[data->arr_size - 1];
+	data->curr_max_i = data->arr[data->arr_size - 1];
 	check_offset(&data->start, &data->end, data->offset, data->arr_size);
 }
 
@@ -285,32 +287,52 @@ void push_B(t_stack **stack_a, t_stack **stack_b, t_data *data)
 
 }
 
-void push_A(t_stack **stack_a, t_stack **stack_b, t_data *data)
+void push_A(t_stack **a, t_stack **b, t_data *data)
 {
 	t_stack *max_node;
-	t_stack *a;
-	t_stack *b;
 
-	a = *stack_a;
-	b = *stack_b;
-	while (b)
+	max_node = find_max_usin_arr(*b, data);
+	while (*b)
 	{
-		max_node = find_max(b);
-		if (max_node->i > data->mid)
+		if (max_node == NULL) // not in b
 		{
-			while (b != max_node)
-				reverse_rotate_stack(&b, "rrb");
-			push_b_to_a(&a, &b, "pa");
+			reverse_rotate_stack(a, "rra");
+		}
+		else if ((*b)->n == data->arr[data->curr_max_i])
+		{
+			if (!a)
+			{
+				push_b_to_a(a, b, "pa");
+				data->curr_max_i--;
+			}
+			else if (a && (*a)->n > (*b)->n)
+			{
+				push_b_to_a(a, b, "pa");
+				rotate_stack(a, "ra");
+				data->curr_max_i--;
+			}
+			else
+			{
+
+			}
 		}
 		else
 		{
-			while (b != max_node)
-				rotate_stack(&b, "rb");
-			push_b_to_a(&a, &b, "pa");
+			if (max_node->i > data->arr[data->mid])
+			{
+				while (b != max_node)
+					rotate_stack(b, "rb");
+			}
+			else
+			{
+				while (b != max_node)
+					reverse_rotate_stack(b, "rrb");
+			}
+			push_b_to_a(a, b, "pb");			
 		}
 	}
-	*stack_b = b;
-	*stack_a = a;
+	
+	printf("max_node %d [ %d ]\n", max_node->n, max_node->i);
 }
 
 int	is_stack_sorted(t_stack *head)
@@ -353,6 +375,10 @@ int	main(int ac, char *av[])
 	{
 		push_B(&a, &b, &data);
 		printf("done ppart 1\n");
+		// find max value
+		// if max value is in the first half of the stack
+		// rotate the stack until the max value is at the top
+		system("clear");
 		push_A(&a, &b, &data);
 	}
 }

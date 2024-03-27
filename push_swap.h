@@ -22,6 +22,8 @@ typedef struct s_data {
 	int div;
 	int arr_size;
 	int	*arr;
+	int orig_max;
+	int curr_max_i;
 } t_data;
 
 /* main.c */
@@ -39,7 +41,7 @@ int *make_arr(t_stack *head, int *arr_size);
 void sort_arr(int   *arr, int arr_size);
 t_stack *parse(int ac, char *av[]);
 void sort_two(t_stack **head, char *msg);
-t_stack	*find_max(t_stack *stack);
+t_stack	*find_max_usin_arr(t_stack *stack, t_data *data);
 t_stack	*find_min(t_stack *stack);
 
 /* parse.c */
