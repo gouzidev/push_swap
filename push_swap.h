@@ -24,6 +24,7 @@ typedef struct s_data {
 	int	*arr;
 	int orig_max;
 	int curr_max_i;
+	int	push_counter;
 } t_data;
 
 /* main.c */

@@ -240,7 +240,8 @@ void set_up(t_stack **stack_a, t_data *data)
     data->end = data->mid + data->offset;
     data->start = data->mid - data->offset;
 	data->orig_max = data->arr[data->arr_size - 1];
-	data->curr_max_i = data->arr[data->arr_size - 1];
+	data->curr_max_i = data->arr_size - 1;
+	data->push_counter = 0;
 	check_offset(&data->start, &data->end, data->offset, data->arr_size);
 }
 
@@ -291,48 +292,58 @@ void push_A(t_stack **a, t_stack **b, t_data *data)
 {
 	t_stack *max_node;
 
-	max_node = find_max_usin_arr(*b, data);
 	while (*b)
 	{
-		if (max_node == NULL) // not in b
-		{
-			reverse_rotate_stack(a, "rra");
-		}
-		else if ((*b)->n == data->arr[data->curr_max_i])
-		{
-			if (!a)
-			{
-				push_b_to_a(a, b, "pa");
-				data->curr_max_i--;
-			}
-			else if (a && (*a)->n > (*b)->n)
-			{
-				push_b_to_a(a, b, "pa");
-				rotate_stack(a, "ra");
-				data->curr_max_i--;
-			}
-			else
-			{
+		max_node = find_max_usin_arr(*b, data);
 
-			}
-		}
-		else
+		if (max_node != NULL) // max is in b
 		{
 			if (max_node->i > data->arr[data->mid])
 			{
-				while (b != max_node)
-					rotate_stack(b, "rb");
+				if (*b)
+				{
+					push_b_to_a(a, b, "pa");
+					rotate_stack(a, "ra");
+					data->push_counter--;
+				}
+				else
+				{
+					while (*b != max_node)
+						reverse_rotate_stack(b, "rrb");
+					push_b_to_a(a, b, "pa");
+				}
 			}
 			else
 			{
-				while (b != max_node)
-					reverse_rotate_stack(b, "rrb");
+				if (*b)
+				{
+					push_b_to_a(a, b, "pa");
+					rotate_stack(a, "ra");
+					data->push_counter--;
+				}
+				else
+				{
+					while (*b != max_node)
+						rotate_stack(b, "rb");
+					push_b_to_a(a, b, "pb");
+				}
 			}
-			push_b_to_a(a, b, "pb");			
+			
+		}
+		else // max is in  stack a so we need to bring it up
+		{
+			data->curr_max_i--;
+			while (data->push_counter < 0)
+			{
+				reverse_rotate_stack(a, "rra");
+				data->push_counter++;
+			}
 		}
 	}
-	
-	printf("max_node %d [ %d ]\n", max_node->n, max_node->i);
+	// cleanup
+	max_node = find_max_usin_arr(*b, data);
+	if (*a != max_node)
+		reverse_rotate_stack(a, "rra");
 }
 
 int	is_stack_sorted(t_stack *head)
@@ -345,8 +356,6 @@ int	is_stack_sorted(t_stack *head)
 	}
 	return 1;
 }
-
-
 
 int	main(int ac, char *av[])
 {
@@ -374,11 +383,9 @@ int	main(int ac, char *av[])
 	else
 	{
 		push_B(&a, &b, &data);
-		printf("done ppart 1\n");
 		// find max value
 		// if max value is in the first half of the stack
 		// rotate the stack until the max value is at the top
-		system("clear");
 		push_A(&a, &b, &data);
 	}
 }
